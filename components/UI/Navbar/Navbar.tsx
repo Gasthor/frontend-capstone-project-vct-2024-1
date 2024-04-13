@@ -7,10 +7,10 @@ export default function Navbar() {
                 <Image alt='Logo centro de investigacion e innovacion' src="/logo-CII.svg" width={160} height={12} />
             </div>
             <div>
-                <Image alt='Logo Viña Concha y Toro' src="/logo-vina.svg" width={300} height={12} />
+                <Image alt='Logo Viña Concha y Toro' src="/logo-vina01.svg" width={300} height={12} />
             </div>
             <div>
-                <Image alt='Logo UCN' src="/logo-ucn.png" width={60} height={12} />
+                <Image alt='Logo UCN' src="/logo-ucn01.png" width={60} height={12} />
             </div>
 
         </nav>
