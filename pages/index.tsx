@@ -3,6 +3,8 @@ import { Container } from "@/components/UI/Container/Container";
 import { Layout } from "@/components/Layout/Layout";
 import { Poppins } from "next/font/google";
 import Image from 'next/image'
+import { ReactElement } from "react";
+import { NextPageWithLayout } from "./_app";
 
 
 const poppins = Poppins({ subsets: ["latin"], weight: "400" });
@@ -10,9 +12,9 @@ const poppinsLight = Poppins({ subsets: ["latin"], weight: "300" });
 
 
 
-export default function Home() {
+export const Home: NextPageWithLayout = () => {
   return (
-    <Layout title={"DSS - Viña Concha y Toro"} pageDescription={"Menu principal"} >
+    <>
       <h1 className={`m-4 text-4xl ${poppins.className}`}>Módulos de planificación</h1>
 
       <div className="flex flex-col sm:flex-row gap-14">
@@ -32,7 +34,18 @@ export default function Home() {
         </Container>
 
       </div>
+      </>
+   
+  )
 
-    </Layout>
-  );
+ 
 }
+Home.getLayout = function getLayout(page: ReactElement){
+  return(
+    <Layout title={"DSS - Viña Concha y Toro"} pageDescription={"Menu principal"}>
+      {page}
+    </Layout>
+  )
+}
+
+export default Home
