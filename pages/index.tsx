@@ -16,20 +16,20 @@ const poppinsLight = Poppins({ subsets: ["latin"], weight: "300" });
 export const Home: NextPageWithLayout = () => {
   return (
     <>
-      <h1 className={`m-4 text-4xl ${interTitle.className}`}>Módulos de planificación</h1>
+      <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Módulos de planificación</h1>
 
-      <div className="flex flex-col sm:flex-row gap-14">
+      <div className="flex flex-col items-center sm:flex-row gap-4 sm:gap-14">
 
         <Container >
-          <h2 className={`text-2xl ${interTitle.className}`}>Bodega Lontué</h2>
-          <p className={`${interSecondary.className}`}>Proceso de vino blanco</p>
+          <h2 className={`text-center text-2xl ${interTitle.className}`}>Bodega Lontué</h2>
+          <p className={`text-center ${interSecondary.className}`}>Proceso de vino blanco</p>
           <Image src="/img-temp-bodegas.jpeg" width="300" height="12" alt="imagen bodega 1" className=" rounded-xl shadow-md" />
           <ButtonPrincipal title="Ingresar" goTo="/planificacion_lontue"/>
         </Container>
 
         <Container>
-          <h2 className={` text-2xl ${interTitle.className}`}>Bodega Lourdes</h2>
-          <p className={`${interSecondary.className}`}>Proceso de vino tinto</p>
+          <h2 className={`text-center text-2xl ${interTitle.className}`}>Bodega Lourdes</h2>
+          <p className={`text-center ${interSecondary.className}`}>Proceso de vino tinto</p>
           <Image src="/img-temp-bodegas.jpeg" width="300" height="12" alt="imagen bodega 1" className=" rounded-xl shadow-md" />
           <ButtonPrincipal title="Ingresar" goTo="/planificacion_lourdes"/>
         </Container>

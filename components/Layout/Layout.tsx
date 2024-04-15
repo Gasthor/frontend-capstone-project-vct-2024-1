@@ -18,7 +18,7 @@ export const Layout: FC<Props> = ({
             <meta name="description" content={pageDescription}/>
         </Head>
         <Navbar/>
-        <main className="flex flex-col gap-8 items-center p-4 flex-grow">
+        <main className="flex flex-col gap-4 sm:gap-8 items-center p-4 flex-grow">
             {children}
         </main>
         <Footer/>
