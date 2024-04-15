@@ -62,7 +62,7 @@ export const Dropzone: FC<Props> = ({
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}>
                 <p className={`text-center text-sm ${interSecondary.className}`}>{description}</p>
-                <p className={`text-center text-sm ${interSecondary.className}`}>o arrastra tus archivo aqui</p>
+                <p className={`text-center text-sm ${interSecondary.className}`}>o arrastra tus archivo</p>
                 <input type="file" id="dropzone-file" className="hidden" onChange={e => selectFile(e)} />
             </label>
         </div>

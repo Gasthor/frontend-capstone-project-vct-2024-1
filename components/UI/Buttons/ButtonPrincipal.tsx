@@ -24,7 +24,7 @@ export const ButtonPrincipal: FC<Props> = ({
                         <p className={`text-white ${interSecondary}`}>{title}</p>
                     </Link>
                 ) : (
-                    <button className=" bg-orange-600 py-2 px-4 rounded-xl cursor-pointer hover:bg-orange-700 w-fit" onClick={() => action && action()}>
+                    <button className=" bg-orange-600 py-2 px-4 rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-fit" onClick={() => action && action()}>
                         <p className={`text-white ${interSecondary}`}>{title}</p>
                     </button>
                 )
