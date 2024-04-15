@@ -10,7 +10,7 @@ export const Container: FC<Props> = ({
     width
 }) => {
     return(
-        <section className= {`gap-2 flex flex-col bg-white p-4 sm:p-8 rounded-xl shadow-lg ${width?width: " w-11/12 sm:max-w-6xl"}`}>
+        <section className= {`gap-2 flex flex-col bg-white p-4 sm:p-8 rounded-xl shadow-lg ${width?width: " w-11/12 sm:max-w-5xl"}`}>
             {children}
         </section>
     )
