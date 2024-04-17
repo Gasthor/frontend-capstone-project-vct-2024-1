@@ -7,6 +7,7 @@ interface Props {
     setValue: React.Dispatch<React.SetStateAction<string>>
     list?: string[]
     record?: Record<string, string[]>
+    isDisable?: boolean
 }
 
 export const Select: FC<Props> = ({
@@ -15,7 +16,8 @@ export const Select: FC<Props> = ({
     previousValue,
     record,
     setValue,
-    list
+    list,
+    isDisable
 }) => {
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -25,9 +27,9 @@ export const Select: FC<Props> = ({
     return (
         <div className="flex flex-col gap-2">
             <label htmlFor="">{name}</label>
-            <select className="border p-2 rounded-lg" value={value} onChange={handleSelectChange}>
+            <select className="border p-2 rounded-lg" value={value} onChange={handleSelectChange} disabled={isDisable}>
                 <option value="">Seleccione una opcion</option>
-                {previousValue && record? (
+                {previousValue && record && !isDisable? (
                     record[previousValue].map((option, index)=>(
                         <option key={index} value={option}>{option}</option>
                     ))
