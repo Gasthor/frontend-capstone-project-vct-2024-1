@@ -26,7 +26,7 @@ export const ButtonPrincipal: FC<Props> = ({
                         <p className={`text-white ${interSecondary}`}>{title}</p>
                     </Link>
                 ) : (
-                    <button className=" bg-orange-600 py-2 px-4 rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-fit disabled:bg-orange-500 disabled:pointer-events-none" onClick={() => action && action()} disabled={isDisable} >
+                    <button className=" bg-orange-600 py-2 px-4 rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-fit disabled:bg-orange-500 disabled:pointer-events-none" onClick={() => action && action()} disabled={isDisable} type="button" >
                         <p className={`text-white ${interSecondary}`}>{title}</p>
                     </button>
                 )
