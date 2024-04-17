@@ -29,7 +29,7 @@ export const Dropzone: FC<Props> = ({
 
                 }
             } else {
-                toast.error("Archivo no corresponde a la extensión correspondiente")
+                toast.error("Archivo no corresponde a la extensión correspondiente",{theme:"colored", position:"top-center"})
             }
         }
     }
@@ -55,7 +55,7 @@ export const Dropzone: FC<Props> = ({
                 setFile(file)
             }
         } else {
-            alert("Archivo no corresponde a la extensión correspondiente")
+            toast.error("Archivo no corresponde a la extensión correspondiente",{theme:"colored", position:"top-center"})
         }
     };
 
@@ -76,7 +76,7 @@ export const Dropzone: FC<Props> = ({
             return (
                 <div className="flex flex-col items-center">
                     <p className={`text-center text- ${interTitle.className}`}>{file?.name}</p>
-                    <button className={`px-2 py-1 bg-red-500 rounded w-fit text-white text-sm ${interSecondary.className} hover:bg-red-600`} onClick={() => setFile(null)}>Eliminar</button>
+                    <button className={`px-2 py-1 bg-red-500 rounded w-fit text-white text-sm ${interSecondary.className} hover:bg-red-600`} onClick={() => {setFile(null); setValue(null)}}>Eliminar</button>
                 </div>
             )
         }
