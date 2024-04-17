@@ -1,7 +1,7 @@
 import { Layout } from "@/components/Layout/Layout";
 import { ButtonPrincipal } from "@/components/UI/Buttons/ButtonPrincipal";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { interSecondary, interTitle } from "@/styles/fonts";
 import { Container } from "@/components/UI/Container/Container";
 import { Dropzone } from "@/components/UI/Input/Dropzone";
@@ -9,26 +9,54 @@ import { opcionesVelocidad, opcionescapacidadMaxima } from "@/utils/options_labe
 import { Select } from "@/components/UI/Input/Select";
 import { DeleteButton } from "@/components/UI/Buttons/DeleteButton";
 import { EditButton } from "@/components/UI/Buttons/EditButton";
+import axios from "axios";
+import { toast } from "react-toastify";
+
 
 const Home: NextPageWithLayout = () => {
 
     const [fileXlsx, setFileXlsx] = useState<File | null>(null)
     const [filePDF, setFilePDF] = useState<File | null>(null)
 
+    const [buttonUpload, setButtonUpload] = useState(false)
+    const toastIdUpload = React.useRef<string>(null)
+
     const [task, setTast] = useState("")
     const [maxCapacity, setMaxCapacity] = useState("")
     const [processingTime, setProcessingTime] = useState("")
 
     const uploadFiles = () => {
-        console.log("hola")
-        console.log(fileXlsx)
-        console.log(filePDF)
+
+        if (fileXlsx && filePDF) {
+            //toastIdUpload.current = toast.loading("Cargando los archivos al servidor")
+            const formData = new FormData()
+
+            formData.append("myfile", fileXlsx)
+            formData.append("mypdf", filePDF)
+            
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/postFile`, formData)
+                .then(response => {
+                    
+                    toast.success(`Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`)
+                    setButtonUpload(true)
+                })
+                .catch(error => {
+                    toast.error(`Error al subir los archivos. Tipo de error: ${error}`)
+                })
+        }
+        else{
+            toast.error("Se deben seleccionar los 2 archivos requeridos.")
+        }
     }
 
     useEffect(() => {
         setMaxCapacity("")
         setProcessingTime("")
     }, [task])
+
+    useEffect(() => {
+        setButtonUpload(false)
+    },[filePDF,fileXlsx])
 
     return (
         <>
@@ -43,18 +71,18 @@ const Home: NextPageWithLayout = () => {
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Programa vendimia</h3>
                         <p className={`text-center ${interSecondary.className}`}>Solo archivo .xlsx con menos de x mb</p>
                         <Dropzone description={"Selecciona aquí para subir el archivo"} type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" setValue={setFileXlsx} />
+                        
                     </div>
                     <div>
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Plan Lontué</h3>
                         <p className={`text-center ${interSecondary.className}`}>Solo archivo .pdf con menos de x mb</p>
                         <Dropzone description={"Selecciona aquí para subir el archivo"} type="application/pdf" setValue={setFilePDF} />
+                        
                     </div>
                 </div>
-                <div className="flex flex-col justify-center w-full items-center gap-1">
-                    <h4 className={`text-center text-lg ${interTitle.className}`}>Archivos selecionados:</h4>
-                    <p className={`text-sm text-center ${interSecondary.className}`}>{fileXlsx?.name}</p>
-                    <p className={`text-sm text-center ${interSecondary.className}`}>{filePDF?.name}</p>
-                    <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} />
+                <div className="flex flex-col justify-center w-full mt-4 items-center gap-1">
+                    <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} isDisable={buttonUpload}/>
+                    {buttonUpload && <p className={`my-2 text-xs text-center ${interSecondary.className}`}>Selecciona otro archivo para subirlo nuevamente</p>}
                 </div>
 
             </Container>
@@ -115,8 +143,9 @@ const Home: NextPageWithLayout = () => {
                                         <th className="px-3 py-3">100</th>
                                         <th className="px-3 py-3">1</th>
                                         <th className="px-3 py-3">Habilitado</th>
-                                        <th>
-
+                                        <th className="p-3 flex gap-2">
+                                            <DeleteButton />
+                                            <EditButton />
                                         </th>
                                     </tr>
                                     <tr className="border-b bg-slate-50">
@@ -125,7 +154,10 @@ const Home: NextPageWithLayout = () => {
                                         <th className="px-3 py-3">100</th>
                                         <th className="px-3 py-3">1</th>
                                         <th className="px-3 py-3">Habilitado</th>
-                                        <th></th>
+                                        <th className="p-3 flex gap-2">
+                                            <DeleteButton />
+                                            <EditButton />
+                                        </th>
                                     </tr>
                                 </tbody>
                             </table>
