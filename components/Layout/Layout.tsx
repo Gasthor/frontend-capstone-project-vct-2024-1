@@ -22,7 +22,7 @@ export const Layout: FC<Props> = ({
             <Navbar />
             <main className="flex flex-col gap-4 sm:gap-8 items-center p-4 flex-grow">
                 {children}
-                <ToastContainer />
+                <ToastContainer stacked/>
             </main>
             <Footer />
         </div>
