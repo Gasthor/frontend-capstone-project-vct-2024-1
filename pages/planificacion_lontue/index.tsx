@@ -11,6 +11,7 @@ import { DeleteButton } from "@/components/UI/Buttons/DeleteButton";
 import { EditButton } from "@/components/UI/Buttons/EditButton";
 import axios from "axios";
 import { toast } from "react-toastify";
+import ModalDelete from "@/components/UI/Modals/ModalDelete";
 
 
 const Home: NextPageWithLayout = () => {
@@ -20,6 +21,10 @@ const Home: NextPageWithLayout = () => {
     const [listMachine, setListMachine] = useState<{ habilitado: any[], desabilitado: any[] } | null>()
 
     const [buttonUpload, setButtonUpload] = useState(false)
+
+    const [open, setOpen] = useState(false)
+
+    const [idMachineDelete, setIdMachineDelete] = useState("")
 
     const [task, setTast] = useState("")
     const [maxCapacity, setMaxCapacity] = useState("")
@@ -76,6 +81,8 @@ const Home: NextPageWithLayout = () => {
                 tiempoProcesado: newProcessing
             })
                 .then((response) => {
+                    setTast("")
+                    getListMachine()
                     toast.update(toastId, { render: "Maquina agregada correctamente", isLoading: false, type: "success", theme: "colored", autoClose: 5000, position: "top-center" })
                 })
                 .catch(() => {
@@ -97,18 +104,12 @@ const Home: NextPageWithLayout = () => {
             })
     }
     //*** Funcion para generar dialogo de confirmacion al eliminar maquina EVALUAR EXPORTAR O CAMBIAR POR SWAL
-    const confimToast = (idMachine: string) => {
-        toast.info(
-            <div className="flex flex-col justify-center items-center">
-                <h1>Estas seguro en eliminar la maquinaria?</h1>
-                <div className="flex gap-4">
-                    <button className="bg-red-500 py-1 px-2 text-white rounded-md" onClick={() => deleteMachine(idMachine)}>Si</button>
-                    <button className="border-2 border-black text-black py-1 px-2 rounded-md" onClick={()=>toast.dismiss}>No</button>
-                </div>
-            </div>,
-            {theme:"light"}
-        )
+    const confirmDelete = (idMachine: string) => {
+        setIdMachineDelete(idMachine)
+        setOpen(true)
+
     }
+    //Funcion para eliminar maquina
     const deleteMachine = (idMachine: string) => {
 
         const toastId = toast.loading(`Eliminando maquina: ${idMachine}`, { theme: "colored", position: "top-center" })
@@ -226,14 +227,16 @@ const Home: NextPageWithLayout = () => {
                                                 <th className="px-3 py-3">{row[4]}</th>
                                                 <th className="p-3 flex gap-2">
                                                     <EditButton />
-                                                    <DeleteButton action={() => confimToast(row[0])} />
+                                                    <DeleteButton action={() => confirmDelete(row[0])} />
                                                 </th>
                                             </tr>
                                         ))
                                     }
-
                                 </tbody>
                             </table>
+                            <ModalDelete open={open} onClose={() => setOpen(false)} action={() => deleteMachine(idMachineDelete)} type={"maquina"} message={`¿Estas seguro en eliminar la maquina ${idMachineDelete}?`}>
+                                <p>test</p>
+                            </ModalDelete>
                         </div>
                     </div>
 
