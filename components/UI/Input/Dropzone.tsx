@@ -74,7 +74,7 @@ export const Dropzone: FC<Props> = ({
             )
         } else {
             return (
-                <div className="flex flex-col items-center">
+                <div className="flex gap-2 flex-col items-center">
                     <p className={`text-center text- ${interTitle.className}`}>{file?.name}</p>
                     <button className={`px-2 py-1 bg-red-500 rounded w-fit text-white text-sm ${interSecondary.className} hover:bg-red-600`} onClick={() => {setFile(null); setValue(null)}}>Eliminar</button>
                 </div>
@@ -84,7 +84,7 @@ export const Dropzone: FC<Props> = ({
     }
 
     return (
-        <div className={` mt-4 mb-2 flex flex-col bg-orange-50 justify-center items-center border-2 min-h-24 border-orange-500 rounded-xl w-full ${highlighted ? "border-dashed bg-orange-100" : "border-solid"}`}>
+        <div className={` mt-4 mb-2 flex flex-col h-28 bg-orange-50 justify-center items-center border-2 min-h-24 border-orange-500 rounded-xl w-full ${highlighted ? "border-dashed bg-orange-100" : "border-solid"}`}>
 
             {fileSelected()}
         </div>
