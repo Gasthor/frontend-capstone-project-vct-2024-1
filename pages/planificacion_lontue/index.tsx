@@ -85,7 +85,7 @@ const Home: NextPageWithLayout = () => {
             toast.warning("Completa todos los campos con valores validos para realizar la acción", { theme: "colored", position: "top-center" })
         }
     }
-
+    //Funcion para obtener lista de maquinarias
     const getListMachine = () => {
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/getListas_habilitar`)
             .then((response: any | JSON) => {
@@ -96,14 +96,14 @@ const Home: NextPageWithLayout = () => {
                 toast.error("Error al obtener datos de las maquinarias, reintente mas tarde")
             })
     }
-
+    //*** Funcion para generar dialogo de confirmacion al eliminar maquina EVALUAR EXPORTAR O CAMBIAR POR SWAL
     const confimToast = (idMachine: string) => {
         toast.info(
             <div className="flex flex-col justify-center items-center">
                 <h1>Estas seguro en eliminar la maquinaria?</h1>
                 <div className="flex gap-4">
                     <button className="bg-red-500 py-1 px-2 text-white rounded-md" onClick={() => deleteMachine(idMachine)}>Si</button>
-                    <button className="border-2 border-black text-black py-1 px-2 rounded-md" onClick={()=>{}}>No</button>
+                    <button className="border-2 border-black text-black py-1 px-2 rounded-md" onClick={()=>toast.dismiss}>No</button>
                 </div>
             </div>,
             {theme:"light"}
@@ -202,9 +202,9 @@ const Home: NextPageWithLayout = () => {
                     </div>
                     <div className="flex items-center flex-col mt-8 gap-5">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
-                        <div className="max-h-96 overflow-auto w-fit rounded-lg">
+                        <div className="max-h-96 overflow-auto w-full rounded-lg sm:w-fit">
                             <table className={`w-fit text-sm text-left rtl:text-right ${interTitle.className}`}>
-                                <thead className={`sticky top-0 uppercase bg-slate-200 ${interTitle.className}`}>
+                                <thead className={`sticky top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
                                     <tr>
                                         <th className="px-3 py-3">ID maquina</th>
                                         <th className="px-3 py-3">Tarea</th>
