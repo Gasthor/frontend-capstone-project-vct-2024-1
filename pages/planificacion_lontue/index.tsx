@@ -11,7 +11,7 @@ import { DeleteButton } from "@/components/UI/Buttons/DeleteButton";
 import { EditButton } from "@/components/UI/Buttons/EditButton";
 import axios from "axios";
 import { toast } from "react-toastify";
-import ModalDelete from "@/components/UI/Modals/ModalDelete";
+import Modal from "@/components/UI/Modals/Modal";
 
 
 const Home: NextPageWithLayout = () => {
@@ -22,13 +22,20 @@ const Home: NextPageWithLayout = () => {
 
     const [buttonUpload, setButtonUpload] = useState(false)
 
-    const [open, setOpen] = useState(false)
+    const [openModalDelete, setOpenModalDelete] = useState(false)
+    const [openModalEdit, setOpenModalEdit] = useState(false)
 
     const [idMachineDelete, setIdMachineDelete] = useState("")
+    const [idMachineEdit, setIdMachineEdit] = useState("")
 
     const [task, setTast] = useState("")
     const [maxCapacity, setMaxCapacity] = useState("")
     const [processingTime, setProcessingTime] = useState("")
+
+    const [taskEdit, setTaskEdit] = useState("")
+    const [maxCapacityEdit, setMaxCapacityEdit] = useState("")
+    const [processingTimeEdit, setProcessingTimeEdit] = useState("")
+    const [statusEdit, setStatusEdit] = useState("")
 
     //Funcion para subir los archivos al backend
     const uploadFiles = async () => {
@@ -104,10 +111,18 @@ const Home: NextPageWithLayout = () => {
             })
     }
     //*** Funcion para generar dialogo de confirmacion al eliminar maquina EVALUAR EXPORTAR O CAMBIAR POR SWAL
-    const confirmDelete = (idMachine: string) => {
+    const modalDelete = (idMachine: string) => {
         setIdMachineDelete(idMachine)
-        setOpen(true)
+        setOpenModalDelete(true)
 
+    }
+    const modalEdit = (idMachineEdit: string, task: string, maxCapacity:string, processingTime: string, status: string) => {
+        setTaskEdit(task)
+        setMaxCapacityEdit(maxCapacity)
+        setProcessingTimeEdit(processingTime)
+        setStatusEdit(status)
+        setIdMachineEdit(idMachineEdit)
+        setOpenModalEdit(true)
     }
     //Funcion para eliminar maquina
     const deleteMachine = (idMachine: string) => {
@@ -130,7 +145,20 @@ const Home: NextPageWithLayout = () => {
             toast.update(toastId, { render: `Error al eliminar la maquina ${idMachine}, intente nuevamente`, isLoading: false, type: "error", autoClose: 5000 })
         })
     }
-
+    const editMachine = (idMachineEdit: string) => {
+        if(taskEdit && maxCapacityEdit && processingTimeEdit && idMachineEdit){
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/setModificarParametros`,{
+                maquinaSeleccionada: idMachineEdit,
+                capacidadMaxima : maxCapacityEdit,
+                tiempoProcesado: processingTimeEdit,
+                tarea: taskEdit
+            }).then(()=>{
+                toast.success("Maquina modificada con exito")
+            }).catch(()=>{
+                toast.error("Error al modificar la maquina")
+            })
+        }
+    }
     useEffect(() => {
         getListMachine()
     }, [])
@@ -171,7 +199,7 @@ const Home: NextPageWithLayout = () => {
                     </div>
                 </div>
                 <div className="flex flex-col justify-center w-full mt-4 items-center gap-1">
-                    <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} isDisable={buttonUpload} />
+                    <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} isDisable={buttonUpload} messageDisable="Archivos cargados" />
                     {buttonUpload && <p className={`my-2 text-xs text-center ${interSecondary.className}`}>Selecciona otro archivo para subirlo nuevamente</p>}
                 </div>
 
@@ -204,8 +232,8 @@ const Home: NextPageWithLayout = () => {
                     <div className="flex items-center flex-col mt-8 gap-5">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
                         <div className="max-h-96 overflow-auto w-full rounded-lg sm:w-fit">
-                            <table className={`w-fit text-sm text-left rtl:text-right ${interTitle.className}`}>
-                                <thead className={`sticky top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
+                            <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
+                                <thead className={`sticky text-xs sm:text-sm top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
                                     <tr>
                                         <th className="px-3 py-3">ID maquina</th>
                                         <th className="px-3 py-3">Tarea</th>
@@ -215,7 +243,7 @@ const Home: NextPageWithLayout = () => {
                                         <th className="px-3 py-3">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody className="h-96">
+                                <tbody className="h-96 text-xs sm:text-sm">
                                     {
                                         listMachine && Array.isArray(listMachine["habilitado"]) &&
                                         listMachine["habilitado"].map((row) => (
@@ -224,19 +252,23 @@ const Home: NextPageWithLayout = () => {
                                                 <th className="px-3 py-3">{row[5]}</th>
                                                 <th className="px-3 py-3">{row[1]}</th>
                                                 <th className="px-3 py-3">{row[2]}</th>
-                                                <th className="px-3 py-3">{row[4]}</th>
+                                                <th className="px-3 py-3"><p className={`p-2 text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500" : "bg-red-500"}`}>{row[4]}</p></th>
                                                 <th className="p-3 flex gap-2">
-                                                    <EditButton />
-                                                    <DeleteButton action={() => confirmDelete(row[0])} />
+                                                    <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
+                                                    <DeleteButton action={() => modalDelete(row[0])} />
                                                 </th>
                                             </tr>
                                         ))
                                     }
                                 </tbody>
                             </table>
-                            <ModalDelete open={open} onClose={() => setOpen(false)} action={() => deleteMachine(idMachineDelete)} type={"maquina"} message={`¿Estas seguro en eliminar la maquina ${idMachineDelete}?`}>
-                                <p>test</p>
-                            </ModalDelete>
+                            <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro en eliminar la maquina ${idMachineDelete}?`} title={"Eliminar maquina"} />
+                            <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() =>  editMachine(idMachineEdit)} type="Input" title={`Editar maquina ${idMachineDelete}`} message={`Realiza los cambios pertinente a la maquina ${idMachineEdit} :`}>
+                                <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
+                                <Select name="Capacidad maxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit}/>
+                                <Select name="Tiempo de procesamiento" value={processingTimeEdit} setValue={setProcessingTimeEdit} record={opcionesVelocidad} isDisable={taskEdit === "Fermentación" ? true : false} previousValue={taskEdit}/>
+                                <Select name="Estado" value={statusEdit} setValue={setStatusEdit} list={["Habilitado", "Desabilitado"]} />
+                            </Modal>
                         </div>
                     </div>
 
