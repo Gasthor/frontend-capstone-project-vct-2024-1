@@ -18,9 +18,10 @@ const Home: NextPageWithLayout = () => {
 
     const [fileXlsx, setFileXlsx] = useState<File | null>(null)
     const [filePDF, setFilePDF] = useState<File | null>(null)
-    const [listMachine, setListMachine] = useState<{ habilitado: any[], desabilitado: any[] } | null>()
+    const [listMachine, setListMachine] = useState<{ habilitado: any[], deshabilitado: any[] } | null>()
 
     const [buttonUpload, setButtonUpload] = useState(false)
+    const [buttonStartPlanning, setButtonStartPlanning] = useState(false)
 
     const [openModalDelete, setOpenModalDelete] = useState(false)
     const [openModalEdit, setOpenModalEdit] = useState(false)
@@ -49,7 +50,7 @@ const Home: NextPageWithLayout = () => {
             const toastId = toast.loading("Subiendo los archibos al servidor", { theme: "colored", position: "top-center" })
 
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/postFile`, formData)
-                .then(response => {
+                .then(() => {
                     toast.update(toastId, { render: `Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`, type: "success", isLoading: false, autoClose: 5000 })
                 })
                 .catch(error => {
@@ -62,6 +63,38 @@ const Home: NextPageWithLayout = () => {
         else {
             toast.error("Se deben seleccionar los 2 archivos requeridos.")
         }
+    }
+
+    const downloadFile = (path: string, fileName: string) => {
+        const toastId = toast.loading("Iniciando descarga")
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${path}`, { responseType: 'blob' })
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', fileName) //or any other extension
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link)
+                toast.update(toastId, { render: `Descargando ${fileName}`, isLoading: false, autoClose: 5000, type: "success", theme: "colored" })
+            }).catch(() => {
+                toast.update(toastId, { render: `Error al desacargar ${fileName}, reintente mas tarde`, isLoading: false, autoClose: 5000, type: "error", theme: "colored" })
+            })
+    }
+    const startPlanning = () => {
+        setButtonStartPlanning(true)
+        const toastId = toast.loading("Iniciando planificacion, porfavor espere un momento", { theme: "colored" })
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/iniciarPlanificacion`, { is_switch_enabled: true })
+            .then(() => {
+                toast.dismiss(toastId)
+                downloadFile("getFileOutputModelo", "Panificacion del dia.pdf")
+                downloadFile("getFileOutputResumen", "Resumen.xlsx")
+            }).catch(() => {
+                toast.update(toastId, { render: `Error al iniciar la planificacion, reintente mas tarde`, isLoading: false, autoClose: 5000, type: "error", theme: "colored" })
+            }).finally(() => {
+                setButtonStartPlanning(false)
+            })
+
     }
     //Funcion para tranformar los datos correspondiente al tiempo de procesamineto y maxima capacidad
     const getDigit = (option: string, task: string) => {
@@ -116,7 +149,7 @@ const Home: NextPageWithLayout = () => {
         setOpenModalDelete(true)
 
     }
-    const modalEdit = (idMachineEdit: string, task: string, maxCapacity:string, processingTime: string, status: string) => {
+    const modalEdit = (idMachineEdit: string, task: string, maxCapacity: string, processingTime: string, status: string) => {
         setTaskEdit(task)
         setMaxCapacityEdit(maxCapacity)
         setProcessingTimeEdit(processingTime)
@@ -137,7 +170,7 @@ const Home: NextPageWithLayout = () => {
                     habilitado: listMachine.habilitado.filter(
                         (row) => row[0] !== idMachine
                     ),
-                    desabilitado: listMachine.desabilitado,
+                    deshabilitado: listMachine.deshabilitado,
                 }
                 : null;
             setListMachine(updatedList)
@@ -146,15 +179,23 @@ const Home: NextPageWithLayout = () => {
         })
     }
     const editMachine = (idMachineEdit: string) => {
-        if(taskEdit && maxCapacityEdit && processingTimeEdit && idMachineEdit){
-            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/setModificarParametros`,{
+        if (taskEdit && maxCapacityEdit && processingTimeEdit && idMachineEdit) {
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/setModificarParametros`, {
                 maquinaSeleccionada: idMachineEdit,
-                capacidadMaxima : maxCapacityEdit,
+                capacidadMaxima: maxCapacityEdit,
                 tiempoProcesado: processingTimeEdit,
                 tarea: taskEdit
-            }).then(()=>{
-                toast.success("Maquina modificada con exito")
-            }).catch(()=>{
+            }).then(() => {
+                axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/cambiar_estado_maquina`, {
+                    maquina: idMachineEdit,
+                    estado: statusEdit
+                }).then(() => {
+                    toast.success("Maquina modificada con exito")
+                    getListMachine()
+                }).catch(() => {
+                    toast.error("Error al modificar la maquina")
+                })
+            }).catch(() => {
                 toast.error("Error al modificar la maquina")
             })
         }
@@ -198,8 +239,13 @@ const Home: NextPageWithLayout = () => {
 
                     </div>
                 </div>
-                <div className="flex flex-col justify-center w-full mt-4 items-center gap-1">
-                    <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} isDisable={buttonUpload} messageDisable="Archivos cargados" />
+                <div className="flex flex-col  w-full mt-4 items-center gap-4 h-20">
+                    <div className="flex flex-row gap-4">
+                        <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} isDisable={buttonUpload} messageDisable="Archivos cargados" />
+
+                        <ButtonPrincipal title={"Descargar"} action={() => downloadFile("getFileInput", "Info-dia.xlsx")} />
+                    </div>
+
                     {buttonUpload && <p className={`my-2 text-xs text-center ${interSecondary.className}`}>Selecciona otro archivo para subirlo nuevamente</p>}
                 </div>
 
@@ -209,7 +255,7 @@ const Home: NextPageWithLayout = () => {
                     <div className="border-[3px] border-orange-500 px-[10px] rounded-full text-orange-500 text-xl font-semibold">2</div>
                     <h2 className={`text-2xl ${interTitle.className}`}>Administración de maquinarias</h2>
                 </div>
-                <div>
+                <div className="flex flex-col justify-center items-center gap-5">
                     <div className="flex flex-col gap-2 sm:gap-8">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Agregar maquinaria</h3>
                         <div className="flex flex-col gap-4 flex-wrap sm:flex-row lg:gap-8 xl:gap-16">
@@ -229,7 +275,7 @@ const Home: NextPageWithLayout = () => {
                     <div>
 
                     </div>
-                    <div className="flex items-center flex-col mt-8 gap-5">
+                    <div className="flex items-center flex-col mt-8 gap-5 w-full">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
                         <div className="max-h-96 overflow-auto w-full rounded-lg sm:w-fit">
                             <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
@@ -239,20 +285,20 @@ const Home: NextPageWithLayout = () => {
                                         <th className="px-3 py-3">Tarea</th>
                                         <th className="px-3 py-3">Capacidad maxima</th>
                                         <th className="px-3 py-3">Tiempo de procesamiento</th>
-                                        <th className="px-3 py-3">Estado</th>
+                                        <th className="px-3 py-3 w-32">Estado</th>
                                         <th className="px-3 py-3">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody className="h-96 text-xs sm:text-sm">
                                     {
-                                        listMachine && Array.isArray(listMachine["habilitado"]) &&
-                                        listMachine["habilitado"].map((row) => (
+                                        listMachine && Array.isArray(listMachine["deshabilitado"]) &&
+                                        listMachine["deshabilitado"].map((row) => (
                                             <tr className="border-b-2 bg-slate-100">
                                                 <th className="px-3 py-3">{row[0]}</th>
                                                 <th className="px-3 py-3">{row[5]}</th>
                                                 <th className="px-3 py-3">{row[1]}</th>
-                                                <th className="px-3 py-3">{row[2]}</th>
-                                                <th className="px-3 py-3"><p className={`p-[6px] text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500" : "bg-red-500"}`}>{row[4]}</p></th>
+                                                <th className="px-3 py-3">{row[2]} hrs</th>
+                                                <th className="px-3 py-3"><p className={`px-3 py-1 text-white text-center rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
                                                 <th className="p-3 flex gap-2">
                                                     <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
                                                     <DeleteButton action={() => modalDelete(row[0])} />
@@ -260,19 +306,39 @@ const Home: NextPageWithLayout = () => {
                                             </tr>
                                         ))
                                     }
+                                    {
+                                        listMachine && Array.isArray(listMachine["habilitado"]) &&
+                                        listMachine["habilitado"].map((row) => (
+                                            <tr className="border-b-2 bg-slate-100">
+                                                <th className="px-3 py-3">{row[0]}</th>
+                                                <th className="px-3 py-3">{row[5]}</th>
+                                                <th className="px-3 py-3">{row[1]}</th>
+                                                <th className="px-3 py-3">{row[2]} hrs</th>
+                                                <th className="px-3 py-3"><p className={`px-4 py-1 w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
+                                                <th className="p-3 flex gap-2">
+                                                    <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
+                                                    <DeleteButton action={() => modalDelete(row[0])} />
+                                                </th>
+                                            </tr>
+                                        ))
+                                    }
+                                    
+
                                 </tbody>
                             </table>
                             <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro en eliminar la maquina ${idMachineDelete}?`} title={"Eliminar maquina"} />
-                            <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() =>  editMachine(idMachineEdit)} type="Input" title={`Editar maquina ${idMachineDelete}`} message={`Realiza los cambios pertinente a la maquina ${idMachineEdit} :`}>
+                            <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() => editMachine(idMachineEdit)} type="Input" title={`Editar maquina ${idMachineDelete}`} message={`Realiza los cambios pertinente a la maquina ${idMachineEdit} :`}>
                                 <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
-                                <Select name="Capacidad maxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit}/>
-                                <Select name="Tiempo de procesamiento" value={processingTimeEdit} setValue={setProcessingTimeEdit} record={opcionesVelocidad} isDisable={taskEdit === "Fermentación" ? true : false} previousValue={taskEdit}/>
-                                <Select name="Estado" value={statusEdit} setValue={setStatusEdit} list={["Habilitado", "Desabilitado"]} />
+                                <Select name="Capacidad maxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit} />
+                                <Select name="Tiempo de procesamiento" value={processingTimeEdit} setValue={setProcessingTimeEdit} record={opcionesVelocidad} isDisable={taskEdit === "Fermentación" ? true : false} previousValue={taskEdit} />
+                                <Select name="Estado" value={statusEdit} setValue={setStatusEdit} list={["Habilitado", "Deshabilitado"]} />
                             </Modal>
                         </div>
                     </div>
+                    <ButtonPrincipal title={"Iniciar planificacion"} action={startPlanning} isDisable={buttonStartPlanning} messageDisable="Iniciando planificacion" />
 
                 </div>
+
             </Container >
             <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>
