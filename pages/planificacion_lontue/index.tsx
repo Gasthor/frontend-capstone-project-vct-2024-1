@@ -252,7 +252,7 @@ const Home: NextPageWithLayout = () => {
                                                 <th className="px-3 py-3">{row[5]}</th>
                                                 <th className="px-3 py-3">{row[1]}</th>
                                                 <th className="px-3 py-3">{row[2]}</th>
-                                                <th className="px-3 py-3"><p className={`p-2 text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500" : "bg-red-500"}`}>{row[4]}</p></th>
+                                                <th className="px-3 py-3"><p className={`p-[6px] text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500" : "bg-red-500"}`}>{row[4]}</p></th>
                                                 <th className="p-3 flex gap-2">
                                                     <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
                                                     <DeleteButton action={() => modalDelete(row[0])} />

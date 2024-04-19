@@ -29,7 +29,7 @@ export const ButtonPrincipal: FC<Props> = ({
                         <p className={`text-white ${interSecondary}`}>{title}</p>
                     </Link>
                 ) : (
-                    <button className={`py-2 px-4 rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-fit disabled:pointer-events-none transition-all duration-1000 ${!isDisable ?  "bg-orange-600":"bg-green-500"}`} onClick={() => action && action()} disabled={isDisable} type="button" >
+                    <button className={`py-2 px-4 shadow-md rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-fit disabled:pointer-events-none transition-all duration-1000 ${!isDisable ?  "bg-orange-600":"bg-green-500"}`} onClick={() => action && action()} disabled={isDisable} type="button" >
                         <p className={`text-white ${interSecondary}`}>{!isDisable ? title : messageDisable}</p>
                     </button>
                 )

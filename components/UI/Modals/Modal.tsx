@@ -31,24 +31,27 @@ export default function Modal({ open, onClose, action, type, message, children, 
                         <h1 className={`text-xl ${interTitle.className}`}>{title}</h1>
                         <h2 className={`text-lg ${interSecondary.className}`}>{message}</h2>
                         <footer className="flex flex-row gap-8">
-                            <button className="bg-red-600 p-2 rounded-md text-white" onClick={(e) => handleSubmit(e)}>Eliminar</button>
-                            <button onClick={(e)=> handleCancel(e)}>Cancelar</button>
+                            <button className="bg-red-600 p-2 shadow-xl rounded-md text-white transition-shadow hover:shadow" onClick={(e) => handleSubmit(e)}>Eliminar</button>
+                            <button onClick={(e) => handleCancel(e)}>Cancelar</button>
                         </footer>
                     </>
                 )
             case "Input":
                 return (
-                    <form>
+                    <form className="flex flex-col gap-4 items-center justify-center max-w-lg">
                         <h1 className={`text-xl ${interTitle.className}`}>{title}</h1>
                         {
                             message && <h2 className={`text-lg ${interSecondary.className}`}>{message}</h2>
                         }
-                        {
-                            children
-                        }
+                        <div className="flex flex-row justify-center gap-4 flex-wrap">
+                            {
+                                children
+                            }
+                        </div>
+
                         <footer className="flex flex-row gap-8 mt-5">
                             <button className="bg-orange-600 p-2 rounded-md text-white" onClick={(e) => handleSubmit(e)}>Guardar cambios</button>
-                            <button onClick={(e)=> handleCancel(e)}>Cancelar</button>
+                            <button onClick={(e) => handleCancel(e)}>Cancelar</button>
                         </footer>
 
                     </form>
