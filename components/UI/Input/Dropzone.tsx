@@ -1,7 +1,7 @@
 import { interSecondary, interTitle } from "@/styles/fonts"
 import { ChangeEvent, FC, DragEvent, useState } from "react"
 import { AiOutlineCloudUpload } from "react-icons/ai"
-import { toast } from "react-toastify"
+import { toast } from "sonner"
 
 interface Props {
     description: string
@@ -30,7 +30,7 @@ export const Dropzone: FC<Props> = ({
 
                 }
             } else {
-                toast.error("Archivo no corresponde a la extensión correspondiente",{theme:"colored", position:"top-center"})
+                toast.error("Archivo no corresponde a la extensión correspondiente")
             }
         }
     }
@@ -56,7 +56,7 @@ export const Dropzone: FC<Props> = ({
                 setFile(file)
             }
         } else {
-            toast.error("Archivo no corresponde a la extensión correspondiente",{theme:"colored", position:"top-center"})
+            toast.error("Archivo no corresponde a la extensión correspondiente")
         }
     };
 

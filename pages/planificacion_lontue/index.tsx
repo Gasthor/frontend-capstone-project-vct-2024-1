@@ -10,7 +10,7 @@ import { Select } from "@/components/UI/Input/Select";
 import { DeleteButton } from "@/components/UI/Buttons/DeleteButton";
 import { EditButton } from "@/components/UI/Buttons/EditButton";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Modal from "@/components/UI/Modals/Modal";
 
 
@@ -47,15 +47,15 @@ const Home: NextPageWithLayout = () => {
             formData.append("myfile", fileXlsx)
             formData.append("mypdf", filePDF)
 
-            const toastId = toast.loading("Subiendo los archivos al servidor", { theme: "colored", position: "top-center" })
+            const toastId = toast.loading("Subiendo los archivos al servidor")
 
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/postFile`, formData)
                 .then(() => {
                     setButtonUpload(true)
-                    toast.update(toastId, { render: `Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`, type: "success", isLoading: false, autoClose: 5000 })
+                    toast.success(`Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`,{ id: toastId})
                 })
-                .catch(error => {
-                    toast.update(toastId, { render: `Error al subir los archivos. Tipo de error: ${error}`, type: "error", isLoading: false, autoClose: 5000 })
+                .catch(() => {
+                    toast.error(`Error al subir los archivos. Tipo de error:`,{id:toastId})
                 })
         }
         else {
@@ -74,22 +74,22 @@ const Home: NextPageWithLayout = () => {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link)
-                toast.update(toastId, { render: `Descargando ${fileName}`, isLoading: false, autoClose: 5000, type: "success", theme: "colored" })
+                toast.success(`Descargando ${fileName}`,{id:toastId})
             }).catch(() => {
-                toast.update(toastId, { render: `Error al desacargar ${fileName}, reintente mas tarde`, isLoading: false, autoClose: 5000, type: "error", theme: "colored" })
+                toast.error(`Error al desacargar ${fileName}, reintente mas tarde`,{id:toastId})
             })
     }
 
     const startPlanning = () => {
         setButtonStartPlanning(true)
-        const toastId = toast.loading("Iniciando planificacion, porfavor espere un momento", { theme: "colored" })
+        const toastId = toast.loading("Iniciando planificacion, porfavor espere un momento")
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/iniciarPlanificacion`, { is_switch_enabled: true })
             .then(() => {
                 toast.dismiss(toastId)
                 downloadFile("getFileOutputModelo", "Panificacion del dia.pdf")
                 downloadFile("getFileOutputResumen", "Resumen.xlsx")
             }).catch(() => {
-                toast.update(toastId, { render: `Error al iniciar la planificacion, reintente mas tarde`, isLoading: false, autoClose: 5000, type: "error", theme: "colored" })
+                toast.error(`Error al iniciar la planificacion, reintente mas tarde`,{id:toastId})
             }).finally(() => {
                 setButtonStartPlanning(false)
             })
@@ -122,13 +122,13 @@ const Home: NextPageWithLayout = () => {
                 .then((response) => {
                     setTast("")
                     getListMachine()
-                    toast.update(toastId, { render: "Maquina agregada correctamente", isLoading: false, type: "success", theme: "colored", autoClose: 5000, position: "top-center" })
+                    toast.success("Maquina agregada correctamente", {id:toastId})
                 })
                 .catch(() => {
-                    toast.update(toastId, { render: "Error al ingresar la maquina", isLoading: false, type: "error", theme: "colored", autoClose: 5000 })
+                    toast.error("Error al ingresar la maquina",{id:toastId})
                 })
         } else {
-            toast.warning("Completa todos los campos con valores validos para realizar la acción", { theme: "colored", position: "top-center" })
+            toast.warning("Completa todos los campos con valores validos para realizar la acción")
         }
     }
     //Funcion para obtener lista de maquinarias
@@ -159,11 +159,11 @@ const Home: NextPageWithLayout = () => {
     //Funcion para eliminar maquina
     const deleteMachine = (idMachine: string) => {
 
-        const toastId = toast.loading(`Eliminando maquina ${idMachine}`, { theme: "colored", position: "top-center" })
+        const toastId = toast.loading(`Eliminando maquina ${idMachine}`)
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/eliminar_maquina`, {
             maquina: idMachine
         }).then(() => {
-            toast.update(toastId, { render: `Maquina ${idMachine} eliminada correctamente`, isLoading: false, type: "success", autoClose: 5000 })
+            toast.success(`Maquina ${idMachine} eliminada correctamente`,{id:toastId})
             const updatedList = listMachine
                 ? {
                     habilitado: listMachine.habilitado.filter(
@@ -174,11 +174,11 @@ const Home: NextPageWithLayout = () => {
                 : null;
             setListMachine(updatedList)
         }).catch(() => {
-            toast.update(toastId, { render: `Error al eliminar la maquina ${idMachine}, intente nuevamente`, isLoading: false, type: "error", autoClose: 5000 })
+            toast.error(`Error al eliminar la maquina ${idMachine}, intente nuevamente`, {id:toastId})
         })
     }
     const editMachine = (idMachineEdit: string) => {
-        const toastId = toast.loading(`Guardando cambios de la maquina ${idMachineEdit}`, { theme: "colored", position: "top-center" })
+        const toastId = toast.loading(`Guardando cambios de la maquina ${idMachineEdit}`)
         if (taskEdit && maxCapacityEdit && processingTimeEdit && idMachineEdit) {
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/setModificarParametros`, {
                 maquinaSeleccionada: idMachineEdit,
@@ -190,13 +190,13 @@ const Home: NextPageWithLayout = () => {
                     maquina: idMachineEdit,
                     estado: statusEdit
                 }).then(() => {
-                    toast.update(toastId, { render: `Maquina ${idMachineEdit} actualizada`, isLoading: false, type: "success", autoClose: 5000 })
+                    toast.success(`Maquina ${idMachineEdit} actualizada`, {id:toastId})
                     getListMachine()
                 }).catch(() => {
-                    toast.update(toastId, { render: `Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, isLoading: false, type: "error", autoClose: 5000 })
+                    toast.error(`Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`,{id: toastId})
                 })
             }).catch(() => {
-                toast.update(toastId, { render: `Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, isLoading: false, type: "error", autoClose: 5000 })
+                toast.error(`Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, {id:toastId})
             })
         }
     }
