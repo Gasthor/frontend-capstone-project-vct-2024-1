@@ -26,7 +26,7 @@ export const Select: FC<Props> = ({
     }
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 w-full sm:w-fit">
             <label htmlFor="">{name}</label>
             <select className="border p-2 rounded-lg" value={value} onChange={handleSelectChange} disabled={isDisable} required>
                 <option value="">Seleccione una opcion</option>

@@ -43,7 +43,7 @@ export default function Modal({ open, onClose, action, type, message, children, 
                         {
                             message && <h2 className={`text-lg ${interSecondary.className}`}>{message}</h2>
                         }
-                        <div className="flex flex-row justify-center gap-4 flex-wrap">
+                        <div className="flex flex-row justify-center gap-4 flex-wrap w-full">
                             {
                                 children
                             }

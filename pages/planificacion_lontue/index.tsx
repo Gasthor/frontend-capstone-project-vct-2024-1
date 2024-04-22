@@ -81,6 +81,7 @@ const Home: NextPageWithLayout = () => {
                 toast.update(toastId, { render: `Error al desacargar ${fileName}, reintente mas tarde`, isLoading: false, autoClose: 5000, type: "error", theme: "colored" })
             })
     }
+
     const startPlanning = () => {
         setButtonStartPlanning(true)
         const toastId = toast.loading("Iniciando planificacion, porfavor espere un momento", { theme: "colored" })
@@ -226,21 +227,21 @@ const Home: NextPageWithLayout = () => {
                     <h2 className={`text-xl sm:text-2xl ${interTitle.className}`}>Carga de archivos</h2>
                 </div>
                 <div className="flex flex-col sm:flex-row w-full justify-center mt-2 sm:gap-16">
-                    <div>
+                    <div className="w-full max-w-sm">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Programa vendimia</h3>
                         <p className={`text-center ${interSecondary.className}`}>Solo archivo .xlsx con menos de x mb</p>
                         <Dropzone description={"Selecciona aquí para subir el archivo"} type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" setValue={setFileXlsx} />
 
                     </div>
-                    <div>
+                    <div className="w-full max-w-sm">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Plan Lontué</h3>
                         <p className={`text-center ${interSecondary.className}`}>Solo archivo .pdf con menos de x mb</p>
                         <Dropzone description={"Selecciona aquí para subir el archivo"} type="application/pdf" setValue={setFilePDF} />
 
                     </div>
                 </div>
-                <div className="flex flex-col  w-full mt-4 items-center gap-4 h-20">
-                    <div className="flex flex-row gap-4">
+                <div className="flex flex-col w-full mt-4 items-center gap-4 h-32 sm:h-20">
+                    <div className="flex flex-col sm:justify-center w-full sm:flex-row gap-4">
                         <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} isDisable={buttonUpload} messageDisable="Archivos cargados" />
 
                         <ButtonPrincipal title={"Descargar"} action={() => downloadFile("getFileInput", "Info-dia.xlsx")} />
@@ -256,7 +257,7 @@ const Home: NextPageWithLayout = () => {
                     <h2 className={`text-2xl ${interTitle.className}`}>Administración de maquinarias</h2>
                 </div>
                 <div className="flex flex-col justify-center items-center gap-5">
-                    <div className="flex flex-col gap-2 sm:gap-8">
+                    <div className="flex flex-col w-full gap-2 sm:gap-8">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Agregar maquinaria</h3>
                         <div className="flex flex-col gap-4 flex-wrap sm:flex-row lg:gap-8 xl:gap-16">
 
@@ -277,7 +278,7 @@ const Home: NextPageWithLayout = () => {
                     </div>
                     <div className="flex items-center flex-col mt-8 gap-5 w-full">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
-                        <div className="max-h-96 overflow-auto w-full rounded-lg sm:w-fit">
+                        <div className="max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
                             <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
                                 <thead className={`sticky text-xs sm:text-sm top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
                                     <tr>
