@@ -47,17 +47,15 @@ const Home: NextPageWithLayout = () => {
             formData.append("myfile", fileXlsx)
             formData.append("mypdf", filePDF)
 
-            const toastId = toast.loading("Subiendo los archibos al servidor", { theme: "colored", position: "top-center" })
+            const toastId = toast.loading("Subiendo los archivos al servidor", { theme: "colored", position: "top-center" })
 
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/postFile`, formData)
                 .then(() => {
+                    setButtonUpload(true)
                     toast.update(toastId, { render: `Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`, type: "success", isLoading: false, autoClose: 5000 })
                 })
                 .catch(error => {
                     toast.update(toastId, { render: `Error al subir los archivos. Tipo de error: ${error}`, type: "error", isLoading: false, autoClose: 5000 })
-                })
-                .finally(() => {
-                    setButtonUpload(true)
                 })
         }
         else {
@@ -72,7 +70,7 @@ const Home: NextPageWithLayout = () => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', fileName) //or any other extension
+                link.setAttribute('download', fileName)
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link)
@@ -161,10 +159,10 @@ const Home: NextPageWithLayout = () => {
     //Funcion para eliminar maquina
     const deleteMachine = (idMachine: string) => {
 
-        const toastId = toast.loading(`Eliminando maquina: ${idMachine}`, { theme: "colored", position: "top-center" })
+        const toastId = toast.loading(`Eliminando maquina ${idMachine}`, { theme: "colored", position: "top-center" })
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/eliminar_maquina`, {
             maquina: idMachine
-        }).then((response) => {
+        }).then(() => {
             toast.update(toastId, { render: `Maquina ${idMachine} eliminada correctamente`, isLoading: false, type: "success", autoClose: 5000 })
             const updatedList = listMachine
                 ? {
@@ -180,6 +178,7 @@ const Home: NextPageWithLayout = () => {
         })
     }
     const editMachine = (idMachineEdit: string) => {
+        const toastId = toast.loading(`Guardando cambios de la maquina ${idMachineEdit}`, { theme: "colored", position: "top-center" })
         if (taskEdit && maxCapacityEdit && processingTimeEdit && idMachineEdit) {
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/setModificarParametros`, {
                 maquinaSeleccionada: idMachineEdit,
@@ -191,13 +190,13 @@ const Home: NextPageWithLayout = () => {
                     maquina: idMachineEdit,
                     estado: statusEdit
                 }).then(() => {
-                    toast.success("Maquina modificada con exito")
+                    toast.update(toastId, { render: `Maquina ${idMachineEdit} actualizada`, isLoading: false, type: "success", autoClose: 5000 })
                     getListMachine()
                 }).catch(() => {
-                    toast.error("Error al modificar la maquina")
+                    toast.update(toastId, { render: `Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, isLoading: false, type: "error", autoClose: 5000 })
                 })
             }).catch(() => {
-                toast.error("Error al modificar la maquina")
+                toast.update(toastId, { render: `Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, isLoading: false, type: "error", autoClose: 5000 })
             })
         }
     }
@@ -297,7 +296,7 @@ const Home: NextPageWithLayout = () => {
                                             <tr className="border-b-2 bg-slate-100">
                                                 <th className="px-3 py-3">{row[0]}</th>
                                                 <th className="px-3 py-3">{row[5]}</th>
-                                                <th className="px-3 py-3">{row[1]}</th>
+                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos": ".000 Litros"}</th>
                                                 <th className="px-3 py-3">{row[2]} hrs</th>
                                                 <th className="px-3 py-3"><p className={`px-3 py-1 text-white text-center rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
                                                 <th className="p-3 flex gap-2">
@@ -313,9 +312,9 @@ const Home: NextPageWithLayout = () => {
                                             <tr className="border-b-2 bg-slate-100">
                                                 <th className="px-3 py-3">{row[0]}</th>
                                                 <th className="px-3 py-3">{row[5]}</th>
-                                                <th className="px-3 py-3">{row[1]}</th>
+                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos": " Litros"}</th>
                                                 <th className="px-3 py-3">{row[2]} hrs</th>
-                                                <th className="px-3 py-3"><p className={`px-4 py-1 w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
+                                                <th className="px-3 py-3"><p className={`px-4 py-1 mx-auto w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/90" : "bg-red-500/90"}`}>{row[4]}</p></th>
                                                 <th className="p-3 flex gap-2">
                                                     <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
                                                     <DeleteButton action={() => modalDelete(row[0])} />
