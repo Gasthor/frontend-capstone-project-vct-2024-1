@@ -1,17 +1,10 @@
 import { ButtonPrincipal } from "@/components/UI/Buttons/ButtonPrincipal";
 import { Container } from "@/components/UI/Container/Container";
 import { Layout } from "@/components/Layout/Layout";
-import { Poppins } from "next/font/google";
 import Image from 'next/image'
 import { ReactElement } from "react";
 import { NextPageWithLayout } from "./_app";
 import { interSecondary, interTitle } from "@/styles/fonts";
-
-
-const poppins = Poppins({ subsets: ["latin"], weight: "400" });
-const poppinsLight = Poppins({ subsets: ["latin"], weight: "300" });
-
-
 
 export const Home: NextPageWithLayout = () => {
   return (

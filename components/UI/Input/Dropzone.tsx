@@ -1,4 +1,4 @@
-import { interSecondary, interTitle } from "@/styles/fonts"
+import { interSecondary } from "@/styles/fonts"
 import { ChangeEvent, FC, DragEvent, useState } from "react"
 import { AiOutlineCloudUpload } from "react-icons/ai"
 import { toast } from "sonner"
@@ -30,7 +30,7 @@ export const Dropzone: FC<Props> = ({
 
                 }
             } else {
-                toast.error("Archivo no corresponde a la extensión correspondiente")
+                toast.error("Archivo no corresponde a la extensión")
             }
         }
     }
@@ -70,7 +70,7 @@ export const Dropzone: FC<Props> = ({
                     onDrop={handleDrop}>
                     <p className="text-4xl mb-4"><AiOutlineCloudUpload /></p>
                     <p className={`text-center text-sm ${interSecondary.className}`}>{description}</p>
-                    <p className={`text-center text-sm ${interSecondary.className}`}>o arrastra tus archivo</p>
+                    <p className={`text-center text-sm ${interSecondary.className}`}>o arrastra el archivo</p>
                     <input type="file" id="dropzone-file" className="hidden" onChange={e => selectFile(e)} />
                 </label>
             )

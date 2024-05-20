@@ -52,10 +52,10 @@ const Home: NextPageWithLayout = () => {
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/postFile`, formData)
                 .then(() => {
                     setButtonUpload(true)
-                    toast.success(`Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`,{ id: toastId})
+                    toast.success(`Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`, { id: toastId })
                 })
                 .catch(() => {
-                    toast.error(`Error al subir los archivos. Tipo de error:`,{id:toastId})
+                    toast.error(`Error al subir los archivos. Tipo de error:`, { id: toastId })
                 })
         }
         else {
@@ -74,9 +74,9 @@ const Home: NextPageWithLayout = () => {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link)
-                toast.success(`Descargando ${fileName}`,{id:toastId})
+                toast.success(`Descargando ${fileName}`, { id: toastId })
             }).catch(() => {
-                toast.error(`Error al desacargar ${fileName}, reintente mas tarde`,{id:toastId})
+                toast.error(`Error al desacargar ${fileName}, reintente mas tarde`, { id: toastId })
             })
     }
 
@@ -89,7 +89,7 @@ const Home: NextPageWithLayout = () => {
                 downloadFile("getFileOutputModelo", "Panificacion del dia.pdf")
                 downloadFile("getFileOutputResumen", "Resumen.xlsx")
             }).catch(() => {
-                toast.error(`Error al iniciar la planificacion, reintente mas tarde`,{id:toastId})
+                toast.error(`Error al iniciar la planificacion, reintente mas tarde`, { id: toastId })
             }).finally(() => {
                 setButtonStartPlanning(false)
             })
@@ -109,7 +109,7 @@ const Home: NextPageWithLayout = () => {
     //Funcion para agregar maquina al sistema
     const addMachine = () => {
         if (task && maxCapacity && processingTime) {
-            const toastId = toast.loading("Guardando nueva maquina")
+            const toastId = toast.loading("Guardando nueva máquina")
             //se transforma el valor de la variable en uno valido para el backend a traves de la funcion getDigit ej: 1 hrs => 1 ; 10.000 kilos => 10 ; 10.000 litros => 10000
             const newMax = getDigit(maxCapacity, task)
             const newProcessing = getDigit(processingTime, task)
@@ -122,13 +122,13 @@ const Home: NextPageWithLayout = () => {
                 .then((response) => {
                     setTast("")
                     getListMachine()
-                    toast.success("Maquina agregada correctamente", {id:toastId})
+                    toast.success("Máquina agregada correctamente", { id: toastId })
                 })
                 .catch(() => {
-                    toast.error("Error al ingresar la maquina",{id:toastId})
+                    toast.error("Error al ingresar la máquina", { id: toastId })
                 })
         } else {
-            toast.warning("Completa todos los campos con valores validos para realizar la acción")
+            toast.warning("Completa todos los campos con valores válidos para realizar la acción")
         }
     }
     //Funcion para obtener lista de maquinarias
@@ -139,7 +139,7 @@ const Home: NextPageWithLayout = () => {
                 console.log(response.data)
             })
             .catch(() => {
-                toast.error("Error al obtener datos de las maquinarias, reintente mas tarde")
+                toast.error("Error al obtener datos de las maquinarias, reintente más tarde")
             })
     }
     //*** Funcion para generar dialogo de confirmacion al eliminar maquina EVALUAR EXPORTAR O CAMBIAR POR SWAL
@@ -163,18 +163,20 @@ const Home: NextPageWithLayout = () => {
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/eliminar_maquina`, {
             maquina: idMachine
         }).then(() => {
-            toast.success(`Maquina ${idMachine} eliminada correctamente`,{id:toastId})
+            toast.success(`Máquina ${idMachine} eliminada correctamente`, { id: toastId })
             const updatedList = listMachine
                 ? {
                     habilitado: listMachine.habilitado.filter(
                         (row) => row[0] !== idMachine
                     ),
-                    deshabilitado: listMachine.deshabilitado,
+                    deshabilitado: listMachine.deshabilitado.filter(
+                        (row) => row[0] !== idMachine
+                    )
                 }
                 : null;
             setListMachine(updatedList)
         }).catch(() => {
-            toast.error(`Error al eliminar la maquina ${idMachine}, intente nuevamente`, {id:toastId})
+            toast.error(`Error al eliminar la máquina ${idMachine}, intente nuevamente`, { id: toastId })
         })
     }
     const editMachine = (idMachineEdit: string) => {
@@ -190,13 +192,13 @@ const Home: NextPageWithLayout = () => {
                     maquina: idMachineEdit,
                     estado: statusEdit
                 }).then(() => {
-                    toast.success(`Maquina ${idMachineEdit} actualizada`, {id:toastId})
+                    toast.success(`Máquina ${idMachineEdit} actualizada`, { id: toastId })
                     getListMachine()
                 }).catch(() => {
-                    toast.error(`Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`,{id: toastId})
+                    toast.error(`Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, { id: toastId })
                 })
             }).catch(() => {
-                toast.error(`Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, {id:toastId})
+                toast.error(`Error al guardar los cambios de ${idMachineEdit}, intente nuevamente`, { id: toastId })
             })
         }
     }
@@ -228,22 +230,22 @@ const Home: NextPageWithLayout = () => {
                 <div className="flex flex-col sm:flex-row w-full justify-center mt-2 sm:gap-16">
                     <div className="w-full max-w-sm">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Programa vendimia</h3>
-                        <p className={`text-center ${interSecondary.className}`}>Solo archivo .xlsx con menos de x mb</p>
+                        <p className={`text-center ${interSecondary.className}`}>Solo archivo .xlsx con menos de 5 mb</p>
                         <Dropzone description={"Selecciona aquí para subir el archivo"} type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" setValue={setFileXlsx} />
 
                     </div>
                     <div className="w-full max-w-sm">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Plan Lontué</h3>
-                        <p className={`text-center ${interSecondary.className}`}>Solo archivo .pdf con menos de x mb</p>
+                        <p className={`text-center ${interSecondary.className}`}>Solo archivo .pdf con menos de 5 mb</p>
                         <Dropzone description={"Selecciona aquí para subir el archivo"} type="application/pdf" setValue={setFilePDF} />
 
                     </div>
                 </div>
                 <div className="flex flex-col w-full mt-4 items-center gap-4 h-32 sm:h-20">
                     <div className="flex flex-col sm:justify-center w-full sm:flex-row gap-4">
-                        <ButtonPrincipal title={"Subir archivos"} action={uploadFiles} isDisable={buttonUpload} messageDisable="Archivos cargados" />
+                        <ButtonPrincipal title={"Cargar archivos"} action={uploadFiles} isDisable={buttonUpload} messageDisable="Archivos cargados" />
 
-                        <ButtonPrincipal title={"Descargar"} action={() => downloadFile("getFileInput", "Info-dia.xlsx")} />
+                        <ButtonPrincipal title={"Descargar archivos"} action={() => downloadFile("getFileInput", "Info-dia.xlsx")} />
                     </div>
 
                     {buttonUpload && <p className={`my-2 text-xs text-center ${interSecondary.className}`}>Selecciona otro archivo para subirlo nuevamente</p>}
@@ -262,12 +264,12 @@ const Home: NextPageWithLayout = () => {
 
                             <Select name="Tarea" value={task} setValue={setTast} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
 
-                            <Select name="Capacidad maxima" value={maxCapacity} setValue={setMaxCapacity} record={opcionescapacidadMaxima} previousValue={task} />
+                            <Select name="Capacidad máxima" value={maxCapacity} setValue={setMaxCapacity} record={opcionescapacidadMaxima} previousValue={task} />
 
                             <Select name="Tiempo de procesamiento" value={processingTime} setValue={setProcessingTime} record={opcionesVelocidad} previousValue={task} isDisable={task === "Fermentación" ? true : false} />
 
                             <div className="flex items-end">
-                                <ButtonPrincipal title="Guardar maquina" action={addMachine} />
+                                <ButtonPrincipal title="Guardar máquina" action={addMachine} />
                             </div>
 
                         </div>
@@ -275,15 +277,21 @@ const Home: NextPageWithLayout = () => {
                     <div>
 
                     </div>
+                    <div className="border border-gray-200 rounded shadow animate-pulse">
+
+
+                    </div>
+
+                    
                     <div className="flex items-center flex-col mt-8 gap-5 w-full">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
                         <div className="max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
                             <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
                                 <thead className={`sticky text-xs sm:text-sm top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
                                     <tr>
-                                        <th className="px-3 py-3">ID maquina</th>
+                                        <th className="px-3 py-3">ID máquina</th>
                                         <th className="px-3 py-3">Tarea</th>
-                                        <th className="px-3 py-3">Capacidad maxima</th>
+                                        <th className="px-3 py-3">Capacidad máxima</th>
                                         <th className="px-3 py-3">Tiempo de procesamiento</th>
                                         <th className="px-3 py-3 w-32">Estado</th>
                                         <th className="px-3 py-3">Acción</th>
@@ -296,7 +304,7 @@ const Home: NextPageWithLayout = () => {
                                             <tr className="border-b-2 bg-slate-100">
                                                 <th className="px-3 py-3">{row[0]}</th>
                                                 <th className="px-3 py-3">{row[5]}</th>
-                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos": ".000 Litros"}</th>
+                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : ".000 Litros"}</th>
                                                 <th className="px-3 py-3">{row[2]} hrs</th>
                                                 <th className="px-3 py-3"><p className={`px-3 py-1 text-white text-center rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
                                                 <th className="p-3 flex gap-2">
@@ -312,7 +320,7 @@ const Home: NextPageWithLayout = () => {
                                             <tr className="border-b-2 bg-slate-100">
                                                 <th className="px-3 py-3">{row[0]}</th>
                                                 <th className="px-3 py-3">{row[5]}</th>
-                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos": " Litros"}</th>
+                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : " Litros"}</th>
                                                 <th className="px-3 py-3">{row[2]} hrs</th>
                                                 <th className="px-3 py-3"><p className={`px-4 py-1 mx-auto w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/90" : "bg-red-500/90"}`}>{row[4]}</p></th>
                                                 <th className="p-3 flex gap-2">
@@ -322,20 +330,20 @@ const Home: NextPageWithLayout = () => {
                                             </tr>
                                         ))
                                     }
-                                    
+
 
                                 </tbody>
                             </table>
-                            <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro en eliminar la maquina ${idMachineDelete}?`} title={"Eliminar maquina"} />
-                            <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() => editMachine(idMachineEdit)} type="Input" title={`Editar maquina ${idMachineDelete}`} message={`Realiza los cambios pertinente a la maquina ${idMachineEdit} :`}>
+                            <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro que quieres eliminar la máquina ${idMachineDelete}?`} title={"Eliminar máquina"} />
+                            <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() => editMachine(idMachineEdit)} type="Input" title={`Editar máquina ${idMachineDelete}`} message={`Realiza los cambios correspondientes a la máquina ${idMachineEdit} :`}>
                                 <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
-                                <Select name="Capacidad maxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit} />
+                                <Select name="Capacidad máxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit} />
                                 <Select name="Tiempo de procesamiento" value={processingTimeEdit} setValue={setProcessingTimeEdit} record={opcionesVelocidad} isDisable={taskEdit === "Fermentación" ? true : false} previousValue={taskEdit} />
                                 <Select name="Estado" value={statusEdit} setValue={setStatusEdit} list={["Habilitado", "Deshabilitado"]} />
                             </Modal>
                         </div>
                     </div>
-                    <ButtonPrincipal title={"Iniciar planificacion"} action={startPlanning} isDisable={buttonStartPlanning} messageDisable="Iniciando planificacion" />
+                    <ButtonPrincipal title={"Iniciar planificación"} action={startPlanning} isDisable={buttonStartPlanning} messageDisable="Iniciando planificacion" />
 
                 </div>
 
