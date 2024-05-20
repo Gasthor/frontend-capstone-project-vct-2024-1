@@ -12,6 +12,7 @@ import { EditButton } from "@/components/UI/Buttons/EditButton";
 import axios from "axios";
 import { toast } from "sonner";
 import Modal from "@/components/UI/Modals/Modal";
+import { Skeleton } from "@/components/UI/Skeleton/Skeleton";
 
 
 const Home: NextPageWithLayout = () => {
@@ -277,63 +278,68 @@ const Home: NextPageWithLayout = () => {
                     <div>
 
                     </div>
-                    <div className="border border-gray-200 rounded shadow animate-pulse">
 
 
-                    </div>
 
-                    
+
                     <div className="flex items-center flex-col mt-8 gap-5 w-full">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
-                        <div className="max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
-                            <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
-                                <thead className={`sticky text-xs sm:text-sm top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
-                                    <tr>
-                                        <th className="px-3 py-3">ID máquina</th>
-                                        <th className="px-3 py-3">Tarea</th>
-                                        <th className="px-3 py-3">Capacidad máxima</th>
-                                        <th className="px-3 py-3">Tiempo de procesamiento</th>
-                                        <th className="px-3 py-3 w-32">Estado</th>
-                                        <th className="px-3 py-3">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="h-96 text-xs sm:text-sm">
-                                    {
-                                        listMachine && Array.isArray(listMachine["deshabilitado"]) &&
-                                        listMachine["deshabilitado"].map((row) => (
-                                            <tr className="border-b-2 bg-slate-100">
-                                                <th className="px-3 py-3">{row[0]}</th>
-                                                <th className="px-3 py-3">{row[5]}</th>
-                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : ".000 Litros"}</th>
-                                                <th className="px-3 py-3">{row[2]} hrs</th>
-                                                <th className="px-3 py-3"><p className={`px-3 py-1 text-white text-center rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
-                                                <th className="p-3 flex gap-2">
-                                                    <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
-                                                    <DeleteButton action={() => modalDelete(row[0])} />
-                                                </th>
+                        <div className=" max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
+                            {
+                                listMachine ? (
+                                    <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
+                                        <thead className={`sticky text-xs sm:text-sm top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
+                                            <tr>
+                                                <th className="px-3 py-3">ID máquina</th>
+                                                <th className="px-3 py-3">Tarea</th>
+                                                <th className="px-3 py-3">Capacidad máxima</th>
+                                                <th className="px-3 py-3">Tiempo de procesamiento</th>
+                                                <th className="px-3 py-3 w-32">Estado</th>
+                                                <th className="px-3 py-3">Acción</th>
                                             </tr>
-                                        ))
-                                    }
-                                    {
-                                        listMachine && Array.isArray(listMachine["habilitado"]) &&
-                                        listMachine["habilitado"].map((row) => (
-                                            <tr className="border-b-2 bg-slate-100">
-                                                <th className="px-3 py-3">{row[0]}</th>
-                                                <th className="px-3 py-3">{row[5]}</th>
-                                                <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : " Litros"}</th>
-                                                <th className="px-3 py-3">{row[2]} hrs</th>
-                                                <th className="px-3 py-3"><p className={`px-4 py-1 mx-auto w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/90" : "bg-red-500/90"}`}>{row[4]}</p></th>
-                                                <th className="p-3 flex gap-2">
-                                                    <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
-                                                    <DeleteButton action={() => modalDelete(row[0])} />
-                                                </th>
-                                            </tr>
-                                        ))
-                                    }
+                                        </thead>
+                                        <tbody className="h-96 text-xs sm:text-sm">
+                                            {
+                                                listMachine && Array.isArray(listMachine["deshabilitado"]) &&
+                                                listMachine["deshabilitado"].map((row) => (
+                                                    <tr className="border-b-2 bg-slate-100">
+                                                        <th className="px-3 py-3">{row[0]}</th>
+                                                        <th className="px-3 py-3">{row[5]}</th>
+                                                        <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : ".000 Litros"}</th>
+                                                        <th className="px-3 py-3">{row[2]} hrs</th>
+                                                        <th className="px-3 py-3"><p className={`px-3 py-1 text-white text-center rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
+                                                        <th className="p-3 flex gap-2">
+                                                            <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
+                                                            <DeleteButton action={() => modalDelete(row[0])} />
+                                                        </th>
+                                                    </tr>
+                                                ))
+                                            }
+                                            {
+                                                listMachine && Array.isArray(listMachine["habilitado"]) &&
+                                                listMachine["habilitado"].map((row) => (
+                                                    <tr className="border-b-2 bg-slate-100">
+                                                        <th className="px-3 py-3">{row[0]}</th>
+                                                        <th className="px-3 py-3">{row[5]}</th>
+                                                        <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : " Litros"}</th>
+                                                        <th className="px-3 py-3">{row[2]} hrs</th>
+                                                        <th className="px-3 py-3"><p className={`px-4 py-1 mx-auto w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/90" : "bg-red-500/90"}`}>{row[4]}</p></th>
+                                                        <th className="p-3 flex gap-2">
+                                                            <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
+                                                            <DeleteButton action={() => modalDelete(row[0])} />
+                                                        </th>
+                                                    </tr>
+                                                ))
+                                            }
 
 
-                                </tbody>
-                            </table>
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <Skeleton />
+                                )
+                            }
+
                             <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro que quieres eliminar la máquina ${idMachineDelete}?`} title={"Eliminar máquina"} />
                             <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() => editMachine(idMachineEdit)} type="Input" title={`Editar máquina ${idMachineDelete}`} message={`Realiza los cambios correspondientes a la máquina ${idMachineEdit} :`}>
                                 <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
