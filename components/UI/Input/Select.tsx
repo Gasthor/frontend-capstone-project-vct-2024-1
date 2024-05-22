@@ -8,6 +8,7 @@ interface Props {
     list?: string[]
     record?: Record<string, string[][]>
     isDisable?: boolean
+    defaultValue ?: string
 }
 
 export const Select: FC<Props> = ({
@@ -17,7 +18,8 @@ export const Select: FC<Props> = ({
     record,
     setValue,
     list,
-    isDisable
+    isDisable,
+    defaultValue
 }) => {
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -29,7 +31,7 @@ export const Select: FC<Props> = ({
         <div className="flex flex-col gap-2 w-full sm:w-fit">
             <label htmlFor="">{name}</label>
             <select className="border p-2 rounded-lg" value={value} onChange={handleSelectChange} disabled={isDisable} required>
-                <option value="">Seleccione una opción</option>
+                <option value="">{defaultValue ? defaultValue : "Seleccione una opción"}</option>
                 {previousValue && record && !isDisable? (
                     record[previousValue].map((option, index)=>(
                         <option key={index} value={option[0]}>{option[1]}</option>

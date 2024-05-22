@@ -21,6 +21,9 @@ const Home: NextPageWithLayout = () => {
     const [fileXlsx, setFileXlsx] = useState<File | null>(null)
     const [filePDF, setFilePDF] = useState<File | null>(null)
     const [listMachine, setListMachine] = useState<{ habilitado: any[], deshabilitado: any[] } | null>()
+    const [listMachineFilter, setListMachineFilter] = useState<{ habilitado: any[], deshabilitado: any[] } | null>()
+    const [filter, setFilter] = useState("")
+
 
     const [buttonUpload, setButtonUpload] = useState(false)
     const [buttonStartPlanning, setButtonStartPlanning] = useState(false)
@@ -206,6 +209,9 @@ const Home: NextPageWithLayout = () => {
     }
     useEffect(() => {
         getListMachine()
+        setListMachineFilter(listMachineFilter)
+        console.log(listMachineFilter)
+
     }, [])
 
     useEffect(() => {
@@ -221,9 +227,32 @@ const Home: NextPageWithLayout = () => {
         setButtonUpload(false)
     }, [filePDF, fileXlsx])
 
+    useEffect(() => {
+        if (listMachine) {
+            console.log(filter)
+
+            if (filter === "") {
+                console.log()
+                setListMachineFilter(listMachine)
+            } else {
+                const updatedList = {
+                    habilitado: listMachine.habilitado.filter(
+                        (row) => row[5] === filter
+                    ),
+                    deshabilitado: listMachine.deshabilitado.filter(
+                        (row) => row[5] === filter
+                    )
+                };
+                setListMachineFilter(updatedList);
+            }
+        } else {
+            setListMachineFilter(null);
+        }
+    }, [filter, listMachine]);
+
     return (
         <>
-            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación bodega Lontué</h1>
+            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Programación bodega Lontué</h1>
             <Container>
                 <TitleContainer number={1} title="Carga de archivos" />
                 <div className="flex flex-col sm:flex-row w-full justify-center mt-2 sm:gap-16">
@@ -277,74 +306,82 @@ const Home: NextPageWithLayout = () => {
 
 
 
-                    <div className="flex items-center flex-col mt-8 gap-5 w-full">
+                    <div className="flex items-center flex-col mt-8 gap-5 w-full mx-auto">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
-                        <div className=" max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
-                            {
-                                listMachine ? (
-                                    <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
-                                        <thead className={`sticky text-xs sm:text-sm top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
-                                            <tr>
-                                                <th className="px-3 py-3">ID máquina</th>
-                                                <th className="px-3 py-3">Tarea</th>
-                                                <th className="px-3 py-3">Capacidad máxima</th>
-                                                <th className="px-3 py-3">Tiempo de procesamiento</th>
-                                                <th className="px-3 py-3 w-32">Estado</th>
-                                                <th className="px-3 py-3">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="h-96 text-xs sm:text-sm">
-                                            {
-                                                listMachine && Array.isArray(listMachine["deshabilitado"]) &&
-                                                listMachine["deshabilitado"].map((row) => (
-                                                    <tr className="border-b-2 bg-slate-100">
-                                                        <th className="px-3 py-3">{row[0]}</th>
-                                                        <th className="px-3 py-3">{row[5]}</th>
-                                                        <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : ".000 Litros"}</th>
-                                                        <th className="px-3 py-3">{row[2]} hrs</th>
-                                                        <th className="px-3 py-3"><p className={`px-3 py-1 text-white text-center rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
-                                                        <th className="p-3 flex gap-2">
-                                                            <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
-                                                            <DeleteButton action={() => modalDelete(row[0])} />
-                                                        </th>
-                                                    </tr>
-                                                ))
-                                            }
-                                            {
-                                                listMachine && Array.isArray(listMachine["habilitado"]) &&
-                                                listMachine["habilitado"].map((row) => (
-                                                    <tr className="border-b-2 bg-slate-100">
-                                                        <th className="px-3 py-3">{row[0]}</th>
-                                                        <th className="px-3 py-3">{row[5]}</th>
-                                                        <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : " Litros"}</th>
-                                                        <th className="px-3 py-3">{row[2]} hrs</th>
-                                                        <th className="px-3 py-3"><p className={`px-4 py-1 mx-auto w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/90" : "bg-red-500/90"}`}>{row[4]}</p></th>
-                                                        <th className="p-3 flex gap-2">
-                                                            <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
-                                                            <DeleteButton action={() => modalDelete(row[0])} />
-                                                        </th>
-                                                    </tr>
-                                                ))
-                                            }
+                        <div className="flex flex-col items-center gap-4 -auto w-full mx-auto overflow-y-auto">
+                            <div className="flex flex-row items-center ml-auto gap-4  w-fit">
+                                <p className={`text-center ${interSecondary.className}`}>Filtrar tarea:</p>
+
+                                <Select name="" value={filter} setValue={setFilter} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} defaultValue="Todos" />
+                            </div>
+
+                            <div className=" max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
+                                {
+                                    listMachine ? (
+                                        <table className={`w-fit text-left rtl:text-right ${interTitle.className}`}>
+                                            <thead className={`sticky text-xs sm:text-sm top-0 overflow-x-auto  uppercase bg-slate-200 ${interTitle.className}`}>
+                                                <tr>
+                                                    <th className="px-3 py-3">ID máquina</th>
+                                                    <th className="px-3 py-3">Tarea</th>
+                                                    <th className="px-3 py-3">Capacidad máxima</th>
+                                                    <th className="px-3 py-3">Tiempo de procesamiento</th>
+                                                    <th className="px-3 py-3 w-32">Estado</th>
+                                                    <th className="px-3 py-3">Acción</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="h-96 text-xs sm:text-sm">
+                                                {
+                                                    listMachineFilter && Array.isArray(listMachineFilter["deshabilitado"]) &&
+                                                    listMachineFilter["deshabilitado"].map((row) => (
+                                                        <tr className="border-b-2 bg-slate-100">
+                                                            <th className="px-3 py-3">{row[0]}</th>
+                                                            <th className="px-3 py-3">{row[5]}</th>
+                                                            <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : ".000 Litros"}</th>
+                                                            <th className="px-3 py-3">{row[2]} hrs</th>
+                                                            <th className="px-3 py-3"><p className={`px-3 py-1 text-white text-center rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/80" : "bg-red-500/80"}`}>{row[4]}</p></th>
+                                                            <th className="p-3 flex gap-2">
+                                                                <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
+                                                                <DeleteButton action={() => modalDelete(row[0])} />
+                                                            </th>
+                                                        </tr>
+                                                    ))
+                                                }
+                                                {
+                                                    listMachineFilter && Array.isArray(listMachineFilter["habilitado"]) &&
+                                                    listMachineFilter["habilitado"].map((row) => (
+                                                        <tr className="border-b-2 bg-slate-100">
+                                                            <th className="px-3 py-3">{row[0]}</th>
+                                                            <th className="px-3 py-3">{row[5]}</th>
+                                                            <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : " Litros"}</th>
+                                                            <th className="px-3 py-3">{row[2]} hrs</th>
+                                                            <th className="px-3 py-3"><p className={`px-4 py-1 mx-auto w-fit text-center text-white rounded-2xl ${row[4] === "Habilitado" ? "bg-green-500/90" : "bg-red-500/90"}`}>{row[4]}</p></th>
+                                                            <th className="p-3 flex gap-2">
+                                                                <EditButton action={() => modalEdit(row[0], row[5], row[1], row[2], row[4])} />
+                                                                <DeleteButton action={() => modalDelete(row[0])} />
+                                                            </th>
+                                                        </tr>
+                                                    ))
+                                                }
 
 
-                                        </tbody>
-                                    </table>
-                                ) : (
-                                    <Skeleton />
-                                )
-                            }
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <Skeleton />
+                                    )
+                                }
 
-                            <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro que quieres eliminar la máquina ${idMachineDelete}?`} title={"Eliminar máquina"} />
-                            <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() => editMachine(idMachineEdit)} type="Input" title={`Editar máquina ${idMachineDelete}`} message={`Realiza los cambios correspondientes a la máquina ${idMachineEdit} :`}>
-                                <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
-                                <Select name="Capacidad máxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit} />
-                                <Select name="Tiempo de procesamiento" value={processingTimeEdit} setValue={setProcessingTimeEdit} record={opcionesVelocidad} isDisable={taskEdit === "Fermentación" ? true : false} previousValue={taskEdit} />
-                                <Select name="Estado" value={statusEdit} setValue={setStatusEdit} list={["Habilitado", "Deshabilitado"]} />
-                            </Modal>
+                                <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro que quieres eliminar la máquina ${idMachineDelete}?`} title={"Eliminar máquina"} />
+                                <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() => editMachine(idMachineEdit)} type="Input" title={`Editar máquina ${idMachineDelete}`} message={`Realiza los cambios correspondientes a la máquina ${idMachineEdit} :`}>
+                                    <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
+                                    <Select name="Capacidad máxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit} />
+                                    <Select name="Tiempo de procesamiento" value={processingTimeEdit} setValue={setProcessingTimeEdit} record={opcionesVelocidad} isDisable={taskEdit === "Fermentación" ? true : false} previousValue={taskEdit} />
+                                    <Select name="Estado" value={statusEdit} setValue={setStatusEdit} list={["Habilitado", "Deshabilitado"]} />
+                                </Modal>
+                            </div>
                         </div>
                     </div>
-                    <ButtonPrincipal title={"Iniciar planificación"} action={startPlanning} isDisable={buttonStartPlanning} messageDisable="Iniciando planificacion" />
+                    <ButtonPrincipal title={"Iniciar programación"} action={startPlanning} isDisable={buttonStartPlanning} messageDisable="Iniciando programación" />
 
                 </div>
 
