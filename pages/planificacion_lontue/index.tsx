@@ -13,6 +13,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import Modal from "@/components/UI/Modals/Modal";
 import { Skeleton } from "@/components/UI/Skeleton/Skeleton";
+import { TitleContainer } from "@/components/UI/Container/TitleContainer";
 
 
 const Home: NextPageWithLayout = () => {
@@ -224,10 +225,7 @@ const Home: NextPageWithLayout = () => {
         <>
             <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación bodega Lontué</h1>
             <Container>
-                <div className="flex flex-row items-center gap-2">
-                    <div className="border-[3px] border-orange-500 px-[10px] rounded-full text-orange-500 text-xl font-semibold">1</div>
-                    <h2 className={`text-xl sm:text-2xl ${interTitle.className}`}>Carga de archivos</h2>
-                </div>
+                <TitleContainer number={1} title="Carga de archivos" />
                 <div className="flex flex-col sm:flex-row w-full justify-center mt-2 sm:gap-16">
                     <div className="w-full max-w-sm">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Programa vendimia</h3>
@@ -254,10 +252,7 @@ const Home: NextPageWithLayout = () => {
 
             </Container>
             <Container>
-                <div className="flex flex-row items-center gap-2 mb-4">
-                    <div className="border-[3px] border-orange-500 px-[10px] rounded-full text-orange-500 text-xl font-semibold">2</div>
-                    <h2 className={`text-2xl ${interTitle.className}`}>Administración de maquinarias</h2>
-                </div>
+                <TitleContainer number={2} title="Administración de maquinarias" />
                 <div className="flex flex-col justify-center items-center gap-5">
                     <div className="flex flex-col w-full gap-2 sm:gap-8">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Agregar maquinaria</h3>

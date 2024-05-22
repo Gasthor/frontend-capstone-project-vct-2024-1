@@ -24,7 +24,7 @@ export const Home: NextPageWithLayout = () => {
           <h2 className={`text-center text-2xl ${interTitle.className}`}>Bodega Lourdes</h2>
           <p className={`text-center ${interSecondary.className}`}>Proceso de vino tinto</p>
           <Image src="/img-temp-bodegas.jpeg" width="300" height="12" alt="imagen bodega 1" className=" rounded-xl shadow-md" />
-          <ButtonPrincipal title="Ingresar" goTo="/planificacion_lourdes"/>
+          <ButtonPrincipal title="Ingresar" goTo="/bodega_lourdes"/>
         </Container>
 
       </div>

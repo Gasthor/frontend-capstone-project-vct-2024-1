@@ -63,7 +63,7 @@ export const Dropzone: FC<Props> = ({
     const fileSelected = () => {
         if (file == null) {
             return (
-                <label id="dropzone-file" className="cursor-pointer h-44 flex flex-col items-center justify-center w-full"
+                <label id="dropzone-file" className="cursor-pointer h-44 flex flex-col items-center justify-center w-full px-4"
                     onDragEnter={handleDragEnter}
                     onDragOver={handleDragEnter}
                     onDragLeave={handleDragLeave}
