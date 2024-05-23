@@ -15,7 +15,7 @@ const Custom404: NextPageWithLayout = () => {
 
 Custom404.getLayout = function getLayout(page : ReactElement){
     return(
-        <Layout title="Pagina no encontrada" pageDescription="Error al redireccionar la pagina">
+        <Layout title="Pagina no encontrada" pageDescription="Error al redireccionar la pagina" linkIco="/logo-CII.svg">
             {page}
         </Layout>
     )
