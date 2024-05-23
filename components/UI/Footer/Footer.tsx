@@ -6,7 +6,7 @@ export default function Footer() {
   const router = useRouter()
   console.log(router.pathname)
   return (
-    <footer className="mt-4 p-2 bg-black flex justify-evenly items-center">
+    <footer className="mt-4 p-2 bg-black-vct flex justify-evenly items-center">
       {
         router.pathname === "/planificacion_lontue" ? (
           <div>

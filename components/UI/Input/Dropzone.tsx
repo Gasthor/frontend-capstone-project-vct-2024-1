@@ -94,7 +94,7 @@ export const Dropzone: FC<Props> = ({
     }
 
     return (
-        <div className={` mt-4 mb-2 flex flex-col h-44 bg-orange-50 justify-center items-center border-2 min-h-24 border-orange-500 rounded-xl w-full ${highlighted ? "border-dashed bg-orange-100" : "border-solid"}`}>
+        <div className={` mt-4 mb-2 flex flex-col h-44 bg-orange-50 justify-center items-center border-2 min-h-24 border-orange-vct rounded-xl w-full ${highlighted ? "border-dashed bg-orange-100" : "border-solid"}`}>
 
             {fileSelected()}
         </div>
