@@ -58,6 +58,7 @@ const Home: NextPageWithLayout = () => {
                 .then(() => {
                     setButtonUpload(true)
                     toast.success(`Los archivos ${fileXlsx.name} y ${filePDF.name} se subieron correctamente`, { id: toastId })
+                    downloadFile("getFileInput", "Info-dia.xlsx")
                 })
                 .catch(() => {
                     toast.error(`Error al subir los archivos. Tipo de error:`, { id: toastId })
@@ -91,10 +92,10 @@ const Home: NextPageWithLayout = () => {
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/iniciarPlanificacion`, { is_switch_enabled: true })
             .then(() => {
                 toast.dismiss(toastId)
-                downloadFile("getFileOutputModelo", "Panificacion del dia.pdf")
+                downloadFile("getFileOutputModelo", "Programación del dia.pdf")
                 downloadFile("getFileOutputResumen", "Resumen.xlsx")
             }).catch(() => {
-                toast.error(`Error al iniciar la planificacion, reintente mas tarde`, { id: toastId })
+                toast.error(`Error al iniciar la programación, reintente mas tarde`, { id: toastId })
             }).finally(() => {
                 setButtonStartPlanning(false)
             })
@@ -285,7 +286,7 @@ const Home: NextPageWithLayout = () => {
                 <div className="flex flex-col justify-center items-center gap-5">
                     <div className="flex flex-col w-full gap-2 sm:gap-8">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Agregar maquinaria</h3>
-                        <div className="flex flex-col gap-4 flex-wrap sm:flex-row lg:gap-8 xl:gap-16">
+                        <div className="flex flex-col md:justify-between lg:justify-center gap-4 flex-wrap sm:flex-row lg:gap-5 xl:gap-8">
 
                             <Select name="Tarea" value={task} setValue={setTast} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
 
@@ -309,11 +310,14 @@ const Home: NextPageWithLayout = () => {
                     <div className="flex items-center flex-col mt-8 gap-5 w-full lg:w-fit mx-auto">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
                         <div className="flex flex-col items-center gap-4 -auto w-full mx-auto overflow-y-auto">
-                            <div className="flex flex-row items-center justify-center ml-auto gap-4  w-fit">
-                                <p className={`my-auto text-center text-sm ${interSecondary.className}`}>Tarea:</p>
+                            {listMachine &&
+                                <div className="flex flex-row items-center justify-center ml-auto gap-4  w-fit">
+                                    <p className={`my-auto text-center text-sm ${interSecondary.className}`}>Tarea:</p>
 
-                                <Select name="" sm={true} value={filter} setValue={setFilter} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} defaultValue="Todos" />
-                            </div>
+                                    <Select name="" sm={true} value={filter} setValue={setFilter} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} defaultValue="Todos" />
+                                </div>
+                            }
+
 
                             <div className=" max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
                                 {
@@ -393,7 +397,7 @@ const Home: NextPageWithLayout = () => {
 
 Home.getLayout = function getLayout(page: ReactElement) {
     return (
-        <Layout title={"Modulo de planificacion Lontué"} pageDescription={"Modulo de planificacion Lontué"}>
+        <Layout title={"Programación diaria Lontué"} pageDescription={"Modulo de progamación de vendimia en la bodega Lontué"} linkIco="/OpEno.png">
             {page}
         </Layout>
     )

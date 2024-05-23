@@ -42,7 +42,7 @@ export const Home: NextPageWithLayout = () => {
 }
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Layout title={"DSS - Viña Concha y Toro"} pageDescription={"Menu principal"}>
+    <Layout title={"Módulos sistema - Viña Concha y Toro"} pageDescription={"Menu principal"} linkIco="/logo-CII.svg">
       {page}
     </Layout>
   )
