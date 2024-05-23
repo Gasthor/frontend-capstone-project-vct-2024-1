@@ -306,13 +306,13 @@ const Home: NextPageWithLayout = () => {
 
 
 
-                    <div className="flex items-center flex-col mt-8 gap-5 w-full mx-auto">
+                    <div className="flex items-center flex-col mt-8 gap-5 w-full lg:w-fit mx-auto">
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Maquinarias en el sistema</h3>
                         <div className="flex flex-col items-center gap-4 -auto w-full mx-auto overflow-y-auto">
-                            <div className="flex flex-row items-center ml-auto gap-4  w-fit">
-                                <p className={`text-center ${interSecondary.className}`}>Filtrar tarea:</p>
+                            <div className="flex flex-row items-center justify-center ml-auto gap-4  w-fit">
+                                <p className={`my-auto text-center text-sm ${interSecondary.className}`}>Tarea:</p>
 
-                                <Select name="" value={filter} setValue={setFilter} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} defaultValue="Todos" />
+                                <Select name="" sm={true} value={filter} setValue={setFilter} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} defaultValue="Todos" />
                             </div>
 
                             <div className=" max-h-96 overflow-auto w-full rounded-lg lg:w-fit">
@@ -329,7 +329,7 @@ const Home: NextPageWithLayout = () => {
                                                     <th className="px-3 py-3">Acción</th>
                                                 </tr>
                                             </thead>
-                                            <tbody className="h-96 text-xs sm:text-sm">
+                                            <tbody className="max-h-96 text-xs sm:text-sm">
                                                 {
                                                     listMachineFilter && Array.isArray(listMachineFilter["deshabilitado"]) &&
                                                     listMachineFilter["deshabilitado"].map((row) => (
