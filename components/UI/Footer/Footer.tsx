@@ -10,17 +10,17 @@ export default function Footer() {
       {
         router.pathname === "/planificacion_lontue" ? (
           <div>
-            <Image alt='Logo operaciones enologicas' src="/OpEno.png" width={65} height={12} />
+            <Image alt='Logo operaciones enologicas' src="/OpEno.png" width={65} height={12} quality={50} priority/>
           </div>
         ) :
           (<div>
-            <Image alt='Logo Universidad Catolica del Norte' src="/logo-ucn01.png" width={55} height={12} />
+            <Image alt='Logo Universidad Catolica del Norte' src="/logo-ucn01.png" width={55} height={12} quality={50} priority />
           </div>)
       }
 
       <p className=" text-white text-xs font-thin my-auto">Desarrollado por grupo Capstone 2024-1 UCN</p>
       <div>
-        <Image alt='Logo centro de investigacion e innovacion' src="/logo-cii.png" width={130} height={12} />
+        <Image alt='Logo centro de investigacion e innovacion' src="/logo-cii.png" width={130} height={12} priority/>
       </div>
     </footer>
   )

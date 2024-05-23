@@ -2,6 +2,7 @@ import { interSecondary } from "@/styles/fonts"
 import { ChangeEvent, FC, DragEvent, useState } from "react"
 import { AiOutlineCloudUpload } from "react-icons/ai"
 import { toast } from "sonner"
+import Image from "next/image"
 
 interface Props {
     description: string
@@ -79,7 +80,7 @@ export const Dropzone: FC<Props> = ({
                 <div className="flex gap-2 flex-col items-center">
                     {
                         type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ? (
-                            <img src="/xlsx.png" className=" object-contain h-16"/>
+                            <Image height={70} width={70} alt="Archivo xslx" src="/xlsx.png" className=" object-contain h-14 md:h-16 mx-auto" priority quality={30} />
                         ):(
                             <img src="/pdf.png" className=" object-contain h-16"/>
                         )

@@ -5,7 +5,7 @@ export default function Navbar() {
         <nav className="flex justify-around sm:mb-8 p-2 border-b-2 border-orange-vct shadow-md w-full bg-white">
            
             <div>
-                <Image alt='Logo Viña Concha y Toro' src="/logo-vina01.svg" width={300} height={12} />
+                <Image alt='Logo Viña Concha y Toro' src="/logo-vina01.svg" width={300} height={12} quality={50} priority={true} />
             </div>
             
 

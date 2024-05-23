@@ -19,7 +19,7 @@ export const Home: NextPageWithLayout = () => {
             <p className={`text-center ${interSecondary.className}`}>Programación diaria de vendimia</p>
             <p className={`text-center ${interSecondary.className}`}>Proceso de vino blanco</p>
           </div>
-          <img src="/Imagen-Lontue.jpeg"alt="imagen bodega 1" className="rounded-xl object-cover h-56" />
+          <Image height={48} width={350} src="/Imagen-Lontue.jpeg"alt="imagen bodega 1" className="rounded-xl object-cover h-56" quality={60}/>
           <ButtonPrincipal title="Ingresar" goTo="/planificacion_lontue" />
         </Container>
 
@@ -29,7 +29,7 @@ export const Home: NextPageWithLayout = () => {
             <p className={`text-center ${interSecondary.className}`}>Planificación tactica de vendimia</p>
             <p className={`text-center ${interSecondary.className}`}>Proceso de vino tinto</p>
           </div>
-          <img src="/img-temp-bodegas.jpeg" alt="imagen bodega 1" className="rounded-xl object-cover h-56"/>
+          <Image height={48} width={350} src="/img-temp-bodegas.jpeg" alt="imagen bodega 1" className="rounded-xl object-cover h-56" priority quality={60}/>
           <ButtonPrincipal title="Ingresar" goTo="/bodega_lourdes" />
         </Container>
 
