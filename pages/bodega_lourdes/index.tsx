@@ -16,7 +16,7 @@ const Home: NextPageWithLayout = () => {
 
     const [openModalLoadFile, setOpenModalLoadFile] = useState(false)
 
-    const [listFileVendimia, setListFileVendimia] = useState<[{name:string; year:number}]>()
+    const [listFileVendimia, setListFileVendimia] = useState<{name:string; year:number}[] | undefined>(undefined)
 
     const getFileVendimia = () => {
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/files/`)
@@ -40,7 +40,7 @@ const Home: NextPageWithLayout = () => {
                 <div className="flex flex-row overflow-x-auto my-3">
                     {
                         listFileVendimia && Array.isArray(listFileVendimia) && listFileVendimia.map((x)=>(
-                            <ItemFile name={x.name} year={x.year} />
+                            <ItemFile name={x.name} year={x.year} listFile={listFileVendimia} setListFile={setListFileVendimia}/>
                         ))
                     }
                 </div>
