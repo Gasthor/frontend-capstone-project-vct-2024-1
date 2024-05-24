@@ -88,7 +88,7 @@ const Home: NextPageWithLayout = () => {
 
     const startPlanning = () => {
         setButtonStartPlanning(true)
-        const toastId = toast.loading("Iniciando planificacion, porfavor espere un momento")
+        const toastId = toast.loading("Iniciando programación, porfavor espere un momento")
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/iniciarPlanificacion`, { is_switch_enabled: true })
             .then(() => {
                 toast.dismiss(toastId)
@@ -253,7 +253,7 @@ const Home: NextPageWithLayout = () => {
 
     return (
         <>
-            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Programación bodega Lontué</h1>
+            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Programación Bodega Lontué</h1>
             <Container>
                 <TitleContainer number={1} title="Carga de archivos" />
                 <div className="flex flex-col sm:flex-row w-full justify-center mt-2 sm:gap-16">

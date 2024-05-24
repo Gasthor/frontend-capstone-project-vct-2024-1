@@ -26,7 +26,7 @@ export const Home: NextPageWithLayout = () => {
         <Container>
           <h2 className={`text-center text-2xl ${interTitle.className}`}>Bodega Lourdes</h2>
           <div>
-            <p className={`text-center ${interSecondary.className}`}>Planificación tactica de vendimia</p>
+            <p className={`text-center ${interSecondary.className}`}>Planificación táctica de vendimia</p>
             <p className={`text-center ${interSecondary.className}`}>Proceso de vino tinto</p>
           </div>
           <Image height={48} width={350} src="/img-temp-bodegas.jpeg" alt="imagen bodega 1" className="rounded-xl object-cover h-56" priority quality={60}/>
