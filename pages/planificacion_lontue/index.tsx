@@ -12,7 +12,7 @@ import { EditButton } from "@/components/UI/Buttons/EditButton";
 import axios from "axios";
 import { toast } from "sonner";
 import Modal from "@/components/UI/Modals/Modal";
-import { Skeleton } from "@/components/UI/Skeleton/Skeleton";
+import { SkeletonTable } from "@/components/UI/Skeleton/SkeletonTable";
 import { TitleContainer } from "@/components/UI/Container/TitleContainer";
 
 
@@ -371,7 +371,7 @@ const Home: NextPageWithLayout = () => {
                                             </tbody>
                                         </table>
                                     ) : (
-                                        <Skeleton />
+                                        <SkeletonTable />
                                     )
                                 }
 

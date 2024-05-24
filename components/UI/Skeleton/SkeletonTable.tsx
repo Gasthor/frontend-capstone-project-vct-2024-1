@@ -1,11 +1,7 @@
 import { FC } from "react";
 
-interface Props {
 
-}
-//ejemplo, falta mejorar
-
-export const Skeleton: FC<Props> = ({
+export const SkeletonTable: FC<{}> = ({
 
 }) => {
     return (

@@ -57,7 +57,7 @@ export const ItemFile: FC<Props> = ({
                 <ButtonSecundary title={"Ver grafico"} />
                 <DeleteButton action={() => setOpenModalDelete(true)} />
             </div>
-            <Modal open={openModalDelete} onClose={()=>setOpenModalDelete(false)} type={"Delete"} title={"Eliminar archivo"} message={`¿Estas seguro en eliminar ${name} ${year}?`}action={() => deleteFile()}>
+            <Modal open={openModalDelete} onClose={()=>setOpenModalDelete(false)} type={"Delete"} title={"Eliminar archivo"} message={`¿Estas seguro que quieres eliminar ${name} ${year}?`}action={() => deleteFile()}>
 
             </Modal>
         </div>

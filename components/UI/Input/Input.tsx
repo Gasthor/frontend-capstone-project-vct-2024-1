@@ -2,8 +2,8 @@ import { FC } from "react"
 
 interface Props {
     title: string
-    value?: string
-    setValue?: React.Dispatch<React.SetStateAction<string>>
+    value: string
+    setValue: React.Dispatch<React.SetStateAction<string>>
 }
 
 export const Input: FC<Props> = ({
@@ -14,7 +14,7 @@ export const Input: FC<Props> = ({
     return (
         <div className="flex flex-col gap-2 w-full sm:w-fit">
             <label className="flex flex-col">{title}</label>
-            <input className="border p-2 rounded-lg" />
+            <input className="border p-2 rounded-lg" value={value} onChange={(e) => setValue(e.target.value)}/>
         </div>
     )
 }
