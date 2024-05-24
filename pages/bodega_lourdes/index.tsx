@@ -27,7 +27,7 @@ const Home: NextPageWithLayout = () => {
 
     const getFileVendimia = () => {
         setLoadingFile(true)
-        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/files/`)
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/`)
             .then((response: any | JSON) => {
                 setListFileVendimia(response.data)
                 console.log(response.data)
@@ -46,7 +46,7 @@ const Home: NextPageWithLayout = () => {
             formData.append("FECHA", date)
 
 
-            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/files/upload`, formData)
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/upload`, formData)
                 .then((response: any | JSON) => {
                     toast.success(response.data.message)
                     getFileVendimia()
@@ -66,6 +66,7 @@ const Home: NextPageWithLayout = () => {
 
     return (
         <>
+            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación táctica Bodega Lourdes</h1>
             <Container>
                 <TitleContainer number={1} title="Carga de archivos" />
                 <div className="flex flex-row overflow-x-auto my-3 min-h-48 ">

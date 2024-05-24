@@ -31,7 +31,7 @@ export const ItemFile: FC<Props> = ({
 
     const deleteFile = () => {
         console.log("delete")
-        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/files/delete/${name}_${year}`)
+        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/delete/${name}_${year}`)
             .then((response: any | JSON) => {
                 const updateList = () => {
                     const newList = listFile?.filter((x) => {
