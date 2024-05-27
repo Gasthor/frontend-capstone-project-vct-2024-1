@@ -377,7 +377,7 @@ const Home: NextPageWithLayout = () => {
 
                                 <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} action={() => deleteMachine(idMachineDelete)} type={"Delete"} message={`¿Estas seguro que quieres eliminar la máquina ${idMachineDelete}?`} title={"Eliminar máquina"} />
                                 <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)} action={() => editMachine(idMachineEdit)} type="Input" title={`Editar máquina ${idMachineDelete}`} message={`Realiza los cambios correspondientes a la máquina ${idMachineEdit} :`}>
-                                    <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} />
+                                    <Select name="Tarea" value={taskEdit} setValue={setTaskEdit} list={["Despalillado", "Prensado", "Pre-flotación", "Flotación", "Fermentación"]} isDisable={true}/>
                                     <Select name="Capacidad máxima" value={maxCapacityEdit} setValue={setMaxCapacityEdit} record={opcionescapacidadMaxima} previousValue={taskEdit} />
                                     <Select name="Tiempo de procesamiento" value={processingTimeEdit} setValue={setProcessingTimeEdit} record={opcionesVelocidad} isDisable={taskEdit === "Fermentación" ? true : false} previousValue={taskEdit} />
                                     <Select name="Estado" value={statusEdit} setValue={setStatusEdit} list={["Habilitado", "Deshabilitado"]} />
