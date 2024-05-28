@@ -72,6 +72,23 @@ const Home: NextPageWithLayout = () => {
         }
     }
 
+    const downloadFile = (path: string, fileName: string) => {
+        const toastId = toast.loading("Iniciando descarga")
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/${path}`, { responseType: 'blob' })
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', fileName)
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link)
+                toast.success(`Descargando ${fileName}`, { id: toastId })
+            }).catch(() => {
+                toast.error(`Error al desacargar ${fileName}, reintente mas tarde`, { id: toastId })
+            })
+    }
+
     useEffect(() => {
         getFileVendimia()
     }, [])
@@ -122,7 +139,7 @@ const Home: NextPageWithLayout = () => {
             </Container>
             <div className="flex gap-2 flex-col md:flex-row mx-auto w-full md:w-fit">
                 <ButtonPrincipal title={"Cargar archivo"} action={() => setOpenModalLoadFile(true)} />
-                <ButtonPrincipal title={"Descargar archivo"} />
+                <ButtonPrincipal title={"Descargar archivo"} action={()=> downloadFile("/api/files/download/Vendimia_historica.xlsx", "Vendimia_historica.xlsx")} />
             </div>
             <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>
