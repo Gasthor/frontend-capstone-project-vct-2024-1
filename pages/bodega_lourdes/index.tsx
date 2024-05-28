@@ -24,6 +24,14 @@ const Home: NextPageWithLayout = () => {
     const [file, setFile] = useState<File | null>(null)
 
     const [date, setDate] = useState("FECHA")
+    const [contract, setContract] = useState("CONTRATO")
+    const [producer, setProducer] = useState("PRODUCTOR")
+    const [kilosDelivered, setKilosDeliveder] = useState("KILOS ENTREGADOS")
+    const [family, setFamily] = useState("FAMILIA")
+    const [area, setArea] = useState("AREA")
+    const [color, setColor] = useState("COLOR VARIEDAD")
+    const [rut, setRut] = useState("RUT")
+    const [quality, setQuality] = useState("CALIDAD")
 
     const getFileVendimia = () => {
         setLoadingFile(true)
@@ -42,9 +50,13 @@ const Home: NextPageWithLayout = () => {
         if (file) {
             const formData = new FormData()
 
-            formData.append("file", file)
-            formData.append("FECHA", date)
+            const data = {"FECHA": date, "CONTRATO": contract, "PRODUCTOR" : producer, "KILOS ENTREGADOS" : kilosDelivered, "FAMILIA" : family, "AREA": area, "CALIDAD": quality, "RUT": rut}
 
+            formData.append("file", file)
+            formData.append("data", JSON.stringify(data))
+            if (color !== ""){
+                formData.append("COLOR VARIEDAD", color)
+            }
 
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/upload`, formData)
                 .then((response: any | JSON) => {
@@ -66,10 +78,10 @@ const Home: NextPageWithLayout = () => {
 
     return (
         <>
-            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación táctica Bodega Lourdes</h1>
+            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación Táctica Bodega Lourdes</h1>
             <Container>
-                <TitleContainer number={1} title="Carga de archivos" />
-                <div className="flex flex-row overflow-x-auto my-3 min-h-48 ">
+                <TitleContainer number={1} title="Datos historicos" />
+                <div className="flex flex-row overflow-x-auto mt-3 min-h-48 ">
                     {
                         loadingFile ? (
                             <SkeletonListFiles />
@@ -88,22 +100,30 @@ const Home: NextPageWithLayout = () => {
                     }
 
                 </div>
-                <div className="flex gap-2 flex-col md:flex-row mx-auto w-full md:w-fit">
-                    <ButtonPrincipal title={"Cargar archivo"} action={() => setOpenModalLoadFile(true)} />
-                    <ButtonPrincipal title={"Descargar archivo"} />
-                </div>
                 <Modal open={openModalLoadFile} onClose={() => setOpenModalLoadFile(false)} action={() => uploadFile()} title="Cargar archivo" type="Input">
-                    <Dropzone description={"Selecciona aquí para subir el archivo"} setValue={setFile} type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                    <Dropzone description={"Selecciona aquí para subir el archivo"} value={file} setValue={setFile} type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
                     <div>
                         <h3 className={`text-center text-xl ${interTitle.className}`}>Configuración de columnas</h3>
                         <p className={`text-center ${interSecondary.className}`}>Modifique de ser necesario el nombre de la columna correspondiente a su archivo .xlsx</p>
                     </div>
-                    <Input title={"Fecha de cosecha"} value={date} setValue={setDate} />
+                        <Input title={"Fecha de cosecha"} name="FECHA" value={date} setValue={setDate} />
+                        <Input title={"Numero de contrato"} value={contract} setValue={setContract} />
+                        <Input title={"Productor"} value={producer} setValue={setProducer} />
+                        <Input title={"RUT productor"} value={rut} setValue={setRut} />
+                        <Input title={"Kilos entregados"} value={kilosDelivered} setValue={setKilosDeliveder} />
+                        <Input title={"Familia o variedad"} value={family} setValue={setFamily} />
+                        <Input title={"Area o zona de cosecha"} value={area} setValue={setArea} />
+                        <Input title={"Calidad"} value={quality} setValue={setQuality} />
+                        <Input title={"Color variedad"} value={color} setValue={setColor} />
 
 
                 </Modal>
 
             </Container>
+            <div className="flex gap-2 flex-col md:flex-row mx-auto w-full md:w-fit">
+                <ButtonPrincipal title={"Cargar archivo"} action={() => setOpenModalLoadFile(true)} />
+                <ButtonPrincipal title={"Descargar archivo"} />
+            </div>
             <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>
     )

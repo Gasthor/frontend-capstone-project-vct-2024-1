@@ -8,12 +8,14 @@ interface Props {
     description: string
     type?: string
     setValue: React.Dispatch<React.SetStateAction<File | null>>
+    value ?: File | null
 }
 
 export const Dropzone: FC<Props> = ({
     description,
     type,
-    setValue
+    setValue,
+    value
 }) => {
 
     const [highlighted, setHighlighted] = useState(false);
@@ -62,7 +64,7 @@ export const Dropzone: FC<Props> = ({
     };
 
     const fileSelected = () => {
-        if (file == null) {
+        if (file == null || value == null) {
             return (
                 <label id="dropzone-file" className="cursor-pointer h-44 flex flex-col items-center justify-center w-full px-4"
                     onDragEnter={handleDragEnter}
