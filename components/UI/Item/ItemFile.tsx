@@ -13,25 +13,40 @@ interface Props {
     listFile: {
         name: string;
         year: number;
-    } [] | undefined,
+        data: [{
+            Semana: string;
+            Kilos: number;
+        }]
+    }[] | undefined,
     setListFile: Dispatch<SetStateAction<{
         name: string;
         year: number;
-    } [] | undefined>>
+        data: [{
+            Semana: string;
+            Kilos: number;
+        }]
+    }[] | undefined>>
+    data: [{
+        Semana: string;
+        Kilos: number;
+    }]
 }
 
 export const ItemFile: FC<Props> = ({
     name,
     year,
     listFile,
-    setListFile
+    setListFile,
+    data
 }) => {
 
     const [openModalDelete, setOpenModalDelete] = useState(false)
+    const [openModalGraphic, setOpenModalGraphic] = useState(false)
+
 
     const deleteFile = () => {
         console.log("delete")
-        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/delete/${name}_${year}`)
+        axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/delete/${name}/${year}`)
             .then((response: any | JSON) => {
                 const updateList = () => {
                     const newList = listFile?.filter((x) => {
@@ -45,8 +60,11 @@ export const ItemFile: FC<Props> = ({
 
             })
             .catch(() => {
-                toast.error("Error al obtener datos de las vendimias, reintente más tarde")
+                toast.error("Error al eliminar el archivo, reintente más tarde")
             })
+    }
+    const viewGraph = () => {
+        setOpenModalGraphic(true)
     }
 
     return (
@@ -54,11 +72,12 @@ export const ItemFile: FC<Props> = ({
             <Image height={70} width={70} alt="Archivo xslx" src="/xlsx.png" className=" object-contain h-14 md:h-16 mx-auto" priority quality={30} />
             <p className={`text-center  ${interTitle.className}`}>{name} {year}</p>
             <div className="flex flex-row gap-2">
-                <ButtonSecundary title={"Ver grafico"} />
+                <ButtonSecundary title={"Ver gráfico"} action={() => setOpenModalGraphic(true)} />
                 <DeleteButton action={() => setOpenModalDelete(true)} />
             </div>
-            <Modal open={openModalDelete} onClose={()=>setOpenModalDelete(false)} type={"Delete"} title={"Eliminar archivo"} message={`¿Estas seguro que quieres eliminar ${name} ${year}?`}action={() => deleteFile()}>
-
+            <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} type={"Delete"} title={"Eliminar archivo"} message={`¿Estas seguro que quieres eliminar ${name} ${year}?`} action={() => deleteFile()} />
+            <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} data={data} action={() => { }} type={"Graphic"} title={`Gráfico vendimia ${year}`} message={`Gráfico representativo a la cantidad de kilos obtenidos en la bodega en las distintas semanas de vendimia del año `}>
+                
             </Modal>
         </div>
     )
