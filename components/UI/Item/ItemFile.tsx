@@ -46,6 +46,7 @@ export const ItemFile: FC<Props> = ({
 
     const deleteFile = () => {
         console.log("delete")
+        const toastId = toast.loading("Eliminando archivo")
         axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/delete/${name}/${year}`)
             .then((response: any | JSON) => {
                 const updateList = () => {
@@ -56,11 +57,11 @@ export const ItemFile: FC<Props> = ({
                 };
                 setListFile(updateList());
 
-                toast.success(`Archivo ${name} ${year} eliminado`)
+                toast.success(`Archivo ${name} ${year} eliminado`, {id: toastId})
 
             })
             .catch(() => {
-                toast.error("Error al eliminar el archivo, reintente más tarde")
+                toast.error("Error al eliminar el archivo, reintente más tarde", {id: toastId})
             })
     }
     const viewGraph = () => {

@@ -63,17 +63,17 @@ const Home: NextPageWithLayout = () => {
             if (color !== "") {
                 formData.append("COLOR VARIEDAD", color)
             }
-
+            const toastId = toast.loading("Subiendo los archivos al servidor")
             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/upload`, formData)
                 .then((response: any | JSON) => {
-                    toast.success(response.data.message)
+                    toast.success(response.data.message, {id: toastId})
                     getFileVendimia()
                     setFile(null)
                     console.log(response.data.message)
                 })
                 .catch((e) => {
                     console.log(e)
-                    toast.error(e.response.data.error)
+                    toast.error(e.response.data.error , {id: toastId})
                 })
         }
     }
