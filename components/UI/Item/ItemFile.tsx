@@ -57,15 +57,21 @@ export const ItemFile: FC<Props> = ({
                 };
                 setListFile(updateList());
 
-                toast.success(`Archivo ${name} ${year} eliminado`, {id: toastId})
+                toast.success(`Archivo ${name} ${year} eliminado`, { id: toastId })
 
             })
             .catch(() => {
-                toast.error("Error al eliminar el archivo, reintente más tarde", {id: toastId})
+                toast.error("Error al eliminar el archivo, reintente más tarde", { id: toastId })
             })
     }
-    const viewGraph = () => {
-        setOpenModalGraphic(true)
+
+    const kilosTotal = (data: [{
+        Semana: string;
+        Kilos: number;
+    }]) => {
+        const totalKilos = data.reduce((acumulador, item) => acumulador + item.Kilos, 0)
+
+        return totalKilos.toLocaleString('es-ES')
     }
 
     return (
@@ -78,7 +84,7 @@ export const ItemFile: FC<Props> = ({
             </div>
             <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} type={"Delete"} title={"Eliminar archivo"} message={`¿Estas seguro que quieres eliminar ${name} ${year}?`} action={() => deleteFile()} />
             <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} data={data} action={() => { }} type={"Graphic"} title={`Gráfico vendimia ${year}`} message={`Gráfico representativo a la cantidad de kilos obtenidos en la bodega en las distintas semanas de vendimia del año `}>
-                
+                <p>La vendimia conto con un total de {kilosTotal(data)} kilos entregados a la bodega en {data.length} semanas</p>
             </Modal>
         </div>
     )

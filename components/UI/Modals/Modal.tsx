@@ -1,4 +1,5 @@
 import { interSecondary, interTitle } from "@/styles/fonts";
+import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Label, Legend, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 
@@ -84,6 +85,23 @@ export default function Modal({ open, onClose, action, type, message, children, 
                 const formatTooltipLabel = (label: string): string => {
                     return `Semana ${label}`
                 }
+                const [tickFontSize, setTickFontSize] = useState(12);
+
+                const handleResize = () => {
+                    if (window.innerWidth < 768) { // Ancho típico para considerar dispositivo móvil
+                        setTickFontSize(10);
+                    } else {
+                        setTickFontSize(14);
+                    }
+                };
+
+                useEffect(() => {
+                    window.addEventListener('resize', handleResize);
+                    handleResize(); // Llamar inicialmente para establecer el tamaño correcto
+
+                    return () => window.removeEventListener('resize', handleResize);
+                }, []);
+
 
 
                 return (
@@ -98,15 +116,15 @@ export default function Modal({ open, onClose, action, type, message, children, 
                                 margin={{
                                     top: 5,
                                     right: 30,
-                                    left: 30,
-                                    bottom: 15,
+                                    left: 15,
+                                    bottom: 27,
                                 }}
                             >
-                                <XAxis dataKey="Semana" orientation="bottom">
-                                    <Label value={"Semana"} offset={-10} position="insideBottom" />
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="Semana" orientation="bottom" label={{value:"Semana", position:"bottom"}} tick={{ fontSize: tickFontSize }}>
                                 </XAxis>
-                                <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} />
-                                <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel}/>
+                                <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
+                                <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
                                 <Legend verticalAlign="top" height={36} />
                                 <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
                             </BarChart>
