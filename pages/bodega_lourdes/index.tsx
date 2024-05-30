@@ -56,7 +56,7 @@ const Home: NextPageWithLayout = () => {
         if (file) {
             const formData = new FormData()
 
-            const data = { "FECHA": date, "CONTRATO": contract, "PRODUCTOR": producer, "KILOS ENTREGADOS": kilosDelivered, "FAMILIA": family, "AREA": area, "CALIDAD": quality, "RUT": rut }
+            const data = { "FECHA": date, "CONTRATO": contract, "PRODUCTOR": producer, "KILOS ENTREGADOS": kilosDelivered, "FAMILIA": family, "AREA": area, "CALIDAD": quality, "RUT": rut, "TEMPERATURA": temperature, "GRADO BRIX" : brix }
 
             formData.append("file", file)
             formData.append("data", JSON.stringify(data))
