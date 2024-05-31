@@ -1,8 +1,7 @@
 import { interSecondary, interTitle } from "@/styles/fonts";
 import { useEffect, useState } from "react";
-import { Bar, BarChart, CartesianGrid, Label, Legend, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ValueType } from "recharts/types/component/DefaultTooltipContent";
-
+import { IoIosClose } from "react-icons/io";
+import { Bar, BarChart, CartesianGrid, Legend, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 interface Props {
     open: boolean;
@@ -45,21 +44,20 @@ export default function Modal({ open, onClose, action, type, message, children, 
                 )
             case "Input":
                 return (
-                    <form className="flex flex-col gap-4 items-center justify-center max-w-lg">
+                    <form className="flex flex-col gap-4 items-center justify-center max-w-lg ">
                         <h1 className={`text-xl ${interTitle.className}`}>{title}</h1>
                         {
                             message && <h2 className={`text-lg ${interSecondary.className}`}>{message}</h2>
                         }
-                        <div className="flex flex-row justify-center gap-4 flex-wrap w-full max-h-[500px] overflow-y-auto">
+                        <div className="flex flex-row justify-center gap-4 flex-wrap w-full max-h-[550px] overflow-y-auto">
                             {
                                 children
                             }
-                        </div>
-
-                        <footer className="flex flex-row gap-8 mt-5">
+                        <footer className="flex flex-row gap-8 mt-5 w-full justify-center">
                             <button className="bg-orange-600 p-2 rounded-md text-white" onClick={(e) => handleSubmit(e)}>Guardar</button>
                             <button onClick={(e) => handleCancel(e)}>Cancelar</button>
                         </footer>
+                        </div>
 
                     </form>
                 )
@@ -102,16 +100,14 @@ export default function Modal({ open, onClose, action, type, message, children, 
                     return () => window.removeEventListener('resize', handleResize);
                 }, []);
 
-
-
                 return (
                     <div className="max-w-2xl flex flex-col items-center gap-2 md:mx-8 h-[470px]">
                         <h1 className={`text-xl ${interTitle.className}`}>{title}</h1>
                         <h2 className={`text-sm md:text-base text-center ${interSecondary.className}`}>{message}</h2>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart
-                                width={250}
-                                height={40}
+                                width={300}
+                                height={45}
                                 data={data}
                                 margin={{
                                     top: 5,
@@ -147,7 +143,7 @@ export default function Modal({ open, onClose, action, type, message, children, 
         <div onClick={onClose} className={`fixed inset-0 flex justify-center items-center transition-colors  ${open ? "visible bg-black/20" : " invisible"}`}>
 
             <div onClick={(e) => e.stopPropagation()} className={`flex flex-col justify-center items-center bg-white p-6 rounded-xl shadow-lg min-w-80 gap-4 transition-all ${open ? "scale-100 opacity-100" : "scale-0 opacity-0"}`}>
-                <button className="fixed top-4 right-4" onClick={(e) => handleCancel(e)}>X</button>
+                <button className="fixed top-3 right-3 p-2 text-3xl" onClick={(e) => handleCancel(e)}><IoIosClose /></button>
 
                 {
                     typeModalRender()
