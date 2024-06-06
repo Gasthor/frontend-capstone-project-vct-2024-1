@@ -5,7 +5,7 @@ interface Props {
     value: string
     previousValue?: string
     setValue: React.Dispatch<React.SetStateAction<string>>
-    list?: string[]
+    list?: string[] | [number, string][]
     record?: Record<string, string[][]>
     isDisable?: boolean
     defaultValue?: string
@@ -40,7 +40,8 @@ export const Select: FC<Props> = ({
                     ))
                 ) : (
                     list && list.map((option, index) => (
-
+                        
+                        Array.isArray(option) ? <option key={index} value={option[0]}>{option[1] ? option[1] : option}</option> :
                         <option key={index} value={option}>{option}</option>
                     ))
                 )

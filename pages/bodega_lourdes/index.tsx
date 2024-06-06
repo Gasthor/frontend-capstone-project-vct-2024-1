@@ -1,4 +1,4 @@
-import { ReactElement, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react";
 import { NextPageWithLayout } from "../_app";
 import { Layout } from "@/components/Layout/Layout";
 import { Container } from "@/components/UI/Container/Container";
@@ -13,6 +13,18 @@ import axios from "axios";
 import { toast } from "sonner";
 import { SkeletonListFiles } from "@/components/UI/Skeleton/SkeletonListFiles";
 import { FiDownload, FiUpload } from "react-icons/fi";
+import { Select } from "@/components/UI/Input/Select";
+import { ButtonSecundary } from "@/components/UI/Buttons/ButtonSecundary";
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Rectangle } from "recharts";
+
+type GraphicData = {
+    duration: number;
+    data: {
+        Semana: string;
+        Kilos: number;
+    }[];
+    weeks: [number, string][]
+};
 
 const Home: NextPageWithLayout = () => {
 
@@ -41,6 +53,17 @@ const Home: NextPageWithLayout = () => {
     const [brix, setBrix] = useState("GRADO BRIX")
     const [temperature, setTemperature] = useState("TEMPERATURA")
 
+    const [openModalGraphic, setOpenModalGraphic] = useState(false)
+    const [dataGraphic, setDataGraphic] = useState<GraphicData | undefined>(undefined);
+
+    const [weeklyLimit, setWeeklyLimit] = useState("0")
+
+    const [yearsSelected, setYearsSelected] = useState<number[]>()
+    const [limitWeek, setLimitWeek] = useState<{ [key: number]: string }>({})
+    const [factorWeek, setFactorWeek] = useState<{ [key: number]: string }>({})
+    const [objKg, setObjKg] = useState("0")
+
+    const [data, setData] = useState()
 
     const getFileVendimia = () => {
         setLoadingFile(true)
@@ -54,7 +77,6 @@ const Home: NextPageWithLayout = () => {
             })
             .finally(() => setLoadingFile(false))
     }
-
     const uploadFile = () => {
         if (file) {
             const formData = new FormData()
@@ -80,7 +102,6 @@ const Home: NextPageWithLayout = () => {
                 })
         }
     }
-
     const downloadFile = (path: string, fileName: string) => {
         const toastId = toast.loading("Iniciando descarga")
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/${path}`, { responseType: 'blob' })
@@ -97,6 +118,159 @@ const Home: NextPageWithLayout = () => {
                 toast.error(`Error al desacargar ${fileName}, reintente mas tarde`, { id: toastId })
             })
     }
+    const getGraphic = () => {
+        const formData = new FormData();
+
+        formData.append('years', JSON.stringify(yearsSelected));
+
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia`, formData)
+            .then((response: any | JSON) => {
+                setDataGraphic(response.data);
+                console.log(response.data);
+            })
+            .catch(() => {
+                toast.error("Error al obtener datos de las vendimias, reintente más tarde");
+            });
+        setOpenModalGraphic(true)
+        console.log(limitWeek)
+    }
+    const weeksLimit = () => {
+        const weeksElements = []
+        const quantityWeeks = parseInt(weeklyLimit)
+
+        for (let i = 0; i < quantityWeeks; i++) {
+            weeksElements.push(
+                <div className="flex flex-col gap-2 w-full sm:w-fit">
+                    <label className="flex flex-col"></label>
+                    <input
+                        className="border p-2 rounded-lg"
+                        onChange={(e) => handleInputChangeLimit(i, e.target.value)}
+                        placeholder={"Semana " + (i + 1)}
+
+                        value={limitWeek[i]}
+                    />
+                </div>
+            )
+        }
+        if (weeksElements.length === 0) {
+            return <p className=" text-sm font-light">Seleccione la duracion de la vendimia</p>
+        } else {
+            return weeksElements
+        }
+
+    }
+    const weeksFactor = () => {
+        const weeksElements = []
+
+        for (let i = 0; i < parseInt(weeklyLimit); i++) {
+            weeksElements.push(
+                <div className="flex flex-col gap-2 w-full sm:w-fit">
+                    <label className="flex flex-col"></label>
+                    <input
+                        className="border p-2 rounded-lg"
+                        onChange={(e) => handleInputChangeFactor(i, e.target.value)}
+                        placeholder={"Semana " + (i + 1)}
+                        value={factorWeek[i]} />
+                </div>
+            )
+        }
+        if (weeksElements.length === 0) {
+            return <p className=" text-sm font-light">Seleccione la duracion de la vendimia</p>
+        } else {
+            return weeksElements
+        }
+    }
+    const handleInputChangeLimit = (id: number, value: string) => {
+        if (value !== "") {
+            const unformattedValue = value.replace(/\./g, '');
+            const formattedValue = new Intl.NumberFormat("es-CL").format(parseInt(unformattedValue));
+            setLimitWeek({ ...limitWeek, [id]: formattedValue });
+        } else {
+            setLimitWeek({ ...limitWeek, [id]: "0" });
+        }
+    }
+    const handleInputChangeFactor = (id: number, value: string) => {
+        if (value !== "") {
+            const unformattedValue = value.replace(/\./g, '');
+            const formattedValue = new Intl.NumberFormat("es-CL").format(parseInt(unformattedValue));
+            setFactorWeek({ ...factorWeek, [id]: formattedValue });
+        } else {
+            setFactorWeek({ ...factorWeek, [id]: "0" });
+        }
+    }
+    const handleInputChangeObjKg = (value: string) => {
+        if (value !== "") {
+            const unformattedValue = value.replace(/\./g, '');
+            const formattedValue = new Intl.NumberFormat("es-CL").format(parseInt(unformattedValue));
+            setObjKg(formattedValue)
+        } else {
+            setObjKg("0")
+        }
+    }
+    const isYearInList = (year: number) => {
+        let newYearsSelected = [...(yearsSelected || [])];
+
+        if (newYearsSelected.length === 0 || !newYearsSelected.includes(year)) {
+            newYearsSelected.push(year);
+        } else {
+            newYearsSelected = newYearsSelected.filter(x => x !== year);
+        }
+        setYearsSelected(newYearsSelected.length > 0 ? newYearsSelected : undefined);
+    }
+    const startPlanning = () => {
+
+        const formData = new FormData()
+        formData.append("years", JSON.stringify(yearsSelected))
+        formData.append("obj_kilos", objKg)
+        formData.append("limit_week", JSON.stringify(limitWeek))
+        formData.append("factor_week", JSON.stringify(factorWeek))
+
+        formData.append("duration", weeklyLimit)
+
+        const toastId = toast.loading("Iniciando planificación")
+
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia/planificacion`, formData)
+            .then((response: any | JSON) => {
+                toast.success(response.data.message, { id: toastId })
+                setData(response.data.data)
+                console.log(data)
+            })
+            .catch((e) => {
+                console.log(e)
+                toast.error(e.response.data.error, { id: toastId })
+            })
+    }
+
+    const formatNumberTooltip = (number: number): string => {
+        return number.toLocaleString('es-ES') + " kg";
+    }
+    const formatNumber = (number: number): string => {
+        if (number >= 1000000) {
+            return (number / 1000000).toFixed(1) + ' M'
+        } else if (number >= 1000) {
+            return (number / 1000).toFixed(1) + 'k'
+        } else {
+            return number.toString()
+        }
+    }
+    const formatTooltipValue = (value: string | number | (string | number)[]): string => {
+        if (Array.isArray(value)) {
+            return value.map(v => (typeof v === 'number' ? formatNumber(v) : v)).join(', ')
+        }
+        return typeof value === 'number' ? formatNumberTooltip(value) : value
+    }
+    const formatTooltipLabel = (label: string): string => {
+        return `Semana ${label}`
+    }
+    const [tickFontSize, setTickFontSize] = useState(12);
+
+    const handleResize = () => {
+        if (window.innerWidth < 768) { // Ancho típico para considerar dispositivo móvil
+            setTickFontSize(10);
+        } else {
+            setTickFontSize(14);
+        }
+    };
 
     useEffect(() => {
         getFileVendimia()
@@ -165,6 +339,113 @@ const Home: NextPageWithLayout = () => {
                     </p>
                 </ButtonPrincipal>
             </div>
+            <Container>
+                <TitleContainer number={2} title={"Configuración de vendimia"} />
+                <div className="flex flex-col my-4 md:mx-4 gap-4">
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <h3 className="mr-4 min-w-40 md:text-end">Seleccionar años:</h3>
+                        <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                            {
+                                listFileVendimia && listFileVendimia.length > 0 &&
+                                listFileVendimia.map((x) => (
+                                    <div className="flex items-center me-4">
+                                        <input
+                                            className="w-5 h-5 appearance-none border-2 cursor-pointer border-orange-vct/80  rounded-md mr-2 hover:border-orange-vct checked:bg-no-repeat checked:bg-center checked:border-orange-vct checked:bg-orange-vct/60 transition-colors duration-500"
+                                            type="checkbox"
+                                            value={x.year}
+                                            onChange={(x) => isYearInList(parseInt(x.target.value))} />
+                                        <label className="ms-2 text-sm font-medium text-gray-900 ">{x.year}</label>
+                                    </div>
+                                ))
+                            }
+                            {
+                                yearsSelected && yearsSelected?.length > 0 && <ButtonSecundary title={"Ver gráfico"} action={() => getGraphic()} />
+                            }
+                        </div>
+                        <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos en vendimia"} data={dataGraphic && dataGraphic.data}>
+
+                        </Modal>
+
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <h3 className="mr-4 min-w-40 md:text-end">Duración:</h3>
+                        <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                            <Select name="" value={weeklyLimit} setValue={setWeeklyLimit} isDisable={yearsSelected ? false : true} list={dataGraphic?.weeks} />
+                        </div>
+
+                    </div>
+
+                    <div className="flex flex-col md:flex-row md:items-center ">
+                        <h3 className="mr-4 min-w-40 md:text-end">Kilogramos objetivos:</h3>
+                        <input
+                            className="border p-2 rounded-lg"
+                            onChange={(e) => handleInputChangeObjKg(e.target.value)}
+                            value={objKg}
+                        />
+                    </div>
+
+                    <div className="flex flex-col md:flex-row md:items-center ">
+                        <h3 className="mr-4 min-w-40 md:text-end">Limite semanal:</h3>
+                        <div className="flex flex-col">
+                            <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                                {weeksLimit()}
+                            </div>
+                            <p className=" font-extralight text-xs text-red-500 text-justify">Por favor, establecer todos los limites semanales correspondiente, de lo contrario por defecto seran 0 Kg</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center ">
+                        <h3 className="mr-4 min-w-40 md:text-end">Factor semanal:</h3>
+                        <div className="flex flex-col">
+                            <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                                {weeksFactor()}
+                            </div>
+                            <p className=" font-extralight text-xs text-slate-600 text-justify">El ingreso de factores semanales es OPCIONAL, por defecto se establecera un 100%</p>
+                        </div>
+                    </div>
+                    <div className="mx-auto">
+                        <ButtonPrincipal title={"Iniciar planificación"} action={() => startPlanning()} isDisable={weeklyLimit !== "0" && objKg > "0" ? false : true} messageDisable="Iniciar planificación" />
+                    </div>
+
+                </div>
+            </Container>
+
+
+            <Container>
+                <TitleContainer number={3} title={"Resultados de planificación"} />
+                <div className="min-h-[400px] w-full px-8">
+                    {
+                        data && (
+                            <ResponsiveContainer width="100%" height="100%" minHeight={"450px"}>
+                                <BarChart
+                                    width={300}
+                                    height={45}
+                                    data={data}
+                                    margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 15,
+                                        bottom: 27,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="Semana" orientation="bottom" label={{ value: "Semana", position: "bottom" }} tick={{ fontSize: tickFontSize }}>
+                                    </XAxis>
+                                    <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
+                                    <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
+                                    <Legend verticalAlign="top" height={36} />
+                                    <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        )
+                    }
+
+
+
+                </div>
+            </Container>
+
+
+
             <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>
     )

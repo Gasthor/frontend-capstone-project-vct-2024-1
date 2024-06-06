@@ -11,10 +11,10 @@ interface Props {
     type: string
     title: string
     message?: string
-    data?: [{
+    data?: {
         Semana: string;
         Kilos: number;
-    }]
+    }[]
 }
 
 export default function Modal({ open, onClose, action, type, message, children, title, data }: Props) {
@@ -53,10 +53,10 @@ export default function Modal({ open, onClose, action, type, message, children, 
                             {
                                 children
                             }
-                        <footer className="flex flex-row gap-8 mt-5 w-full justify-center">
-                            <button className="bg-orange-600 p-2 rounded-md text-white" onClick={(e) => handleSubmit(e)}>Guardar</button>
-                            <button onClick={(e) => handleCancel(e)}>Cancelar</button>
-                        </footer>
+                            <footer className="flex flex-row gap-8 mt-5 w-full justify-center">
+                                <button className="bg-orange-600 p-2 rounded-md text-white" onClick={(e) => handleSubmit(e)}>Guardar</button>
+                                <button onClick={(e) => handleCancel(e)}>Cancelar</button>
+                            </footer>
                         </div>
 
                     </form>
@@ -104,27 +104,31 @@ export default function Modal({ open, onClose, action, type, message, children, 
                     <div className="max-w-2xl flex flex-col items-center gap-2 md:mx-8 h-[470px]">
                         <h1 className={`text-xl ${interTitle.className}`}>{title}</h1>
                         <h2 className={`text-sm md:text-base text-center ${interSecondary.className}`}>{message}</h2>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                                width={300}
-                                height={45}
-                                data={data}
-                                margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 15,
-                                    bottom: 27,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="Semana" orientation="bottom" label={{value:"Semana", position:"bottom"}} tick={{ fontSize: tickFontSize }}>
-                                </XAxis>
-                                <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
-                                <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
-                                <Legend verticalAlign="top" height={36} />
-                                <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                        {data && (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                    width={300}
+                                    height={45}
+                                    data={data}
+                                    margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 15,
+                                        bottom: 27,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="Semana" orientation="bottom" label={{ value: "Semana", position: "bottom" }} tick={{ fontSize: tickFontSize }}>
+                                    </XAxis>
+                                    <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
+                                    <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
+                                    <Legend verticalAlign="top" height={36} />
+                                    <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
+                                </BarChart>
+                            </ResponsiveContainer>
+
+                        )}
+
                         {children}
                         <footer className="flex flex-row gap-8 p-4">
                         </footer>
