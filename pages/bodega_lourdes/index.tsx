@@ -126,7 +126,7 @@ const Home: NextPageWithLayout = () => {
 
         formData.append('years', JSON.stringify(yearsSelected));
 
-        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia`, formData)
+        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia/`, formData)
             .then((response: any | JSON) => {
                 setDataGraphic(response.data);
                 console.log(response.data);
@@ -146,7 +146,7 @@ const Home: NextPageWithLayout = () => {
                 <div className="flex flex-col gap-2 w-full sm:w-fit">
                     <label className="flex flex-col"></label>
                     <input
-                        className="border p-2 rounded-lg"
+                        className="border p-2 rounded-lg max-w-36"
                         onChange={(e) => handleInputChangeLimit(i, e.target.value)}
                         placeholder={"Semana " + (i + 1)}
 
@@ -170,7 +170,7 @@ const Home: NextPageWithLayout = () => {
                 <div className="flex flex-col gap-2 w-full sm:w-fit">
                     <label className="flex flex-col"></label>
                     <input
-                        className="border p-2 rounded-lg"
+                        className="border p-2 rounded-lg max-w-36"
                         onChange={(e) => handleInputChangeFactor(i, e.target.value)}
                         placeholder={"Semana " + (i + 1)}
                         value={factorWeek[i]} />
@@ -243,6 +243,8 @@ const Home: NextPageWithLayout = () => {
                 toast.error(e.response.data.error, { id: toastId })
             })
     }
+
+
 
     const formatNumberTooltip = (number: number): string => {
         return number.toLocaleString('es-ES') + " kg";
