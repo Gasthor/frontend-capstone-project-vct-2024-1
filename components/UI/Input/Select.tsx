@@ -29,6 +29,8 @@ export const Select: FC<Props> = ({
         setValue(e.target.value)
     }
 
+    console.log(value)
+
     return (
         <div className="flex flex-col gap-2 w-full sm:w-fit my-auto">
             {name && <label className={(sm ? "text-sm" : " text-base")} htmlFor="">{name}</label>}

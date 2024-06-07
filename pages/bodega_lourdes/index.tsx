@@ -1,4 +1,4 @@
-import { Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { NextPageWithLayout } from "../_app";
 import { Layout } from "@/components/Layout/Layout";
 import { Container } from "@/components/UI/Container/Container";
@@ -16,6 +16,9 @@ import { FiDownload, FiUpload } from "react-icons/fi";
 import { Select } from "@/components/UI/Input/Select";
 import { ButtonSecundary } from "@/components/UI/Buttons/ButtonSecundary";
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Rectangle } from "recharts";
+import { PiWarning } from "react-icons/pi";
+import { IoIosInformationCircleOutline } from "react-icons/io";
+import { Alert } from "@/components/UI/Alert/Alert";
 
 type GraphicData = {
     duration: number;
@@ -153,7 +156,7 @@ const Home: NextPageWithLayout = () => {
             )
         }
         if (weeksElements.length === 0) {
-            return <p className=" text-sm font-light">Seleccione la duracion de la vendimia</p>
+            return <p className=" text-sm font-light pt-5">Seleccione la duracion de la vendimia</p>
         } else {
             return weeksElements
         }
@@ -175,7 +178,7 @@ const Home: NextPageWithLayout = () => {
             )
         }
         if (weeksElements.length === 0) {
-            return <p className=" text-sm font-light">Seleccione la duracion de la vendimia</p>
+            return <p className=" text-sm font-light pt-5">Seleccione la duracion de la vendimia</p>
         } else {
             return weeksElements
         }
@@ -384,22 +387,35 @@ const Home: NextPageWithLayout = () => {
                         />
                     </div>
 
-                    <div className="flex flex-col md:flex-row md:items-center ">
-                        <h3 className="mr-4 min-w-40 md:text-end">Limite semanal:</h3>
+                    <div className="flex flex-col md:flex-row">
+                        <h3 className="mr-4 min-w-40 md:text-end md:pt-6">Limite semanal:</h3>
                         <div className="flex flex-col">
                             <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
                                 {weeksLimit()}
                             </div>
-                            <p className=" font-extralight text-xs text-red-500 text-justify">Por favor, establecer todos los limites semanales correspondiente, de lo contrario por defecto seran 0 Kg</p>
+                            {
+                                weeklyLimit !== "0" && weeklyLimit!== "" &&
+                                <Alert
+                                    type="warning"
+                                    message="Por favor, establecer todos los limites semanales correspondiente, de lo contrario por defecto seran 0 Kg"
+                                />
+                            }
                         </div>
                     </div>
-                    <div className="flex flex-col md:flex-row md:items-center ">
-                        <h3 className="mr-4 min-w-40 md:text-end">Factor semanal:</h3>
+                    <div className="flex flex-col md:flex-row ">
+                        <h3 className="mr-4 min-w-40 md:text-end md:pt-6">Factor semanal:</h3>
                         <div className="flex flex-col">
                             <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
                                 {weeksFactor()}
                             </div>
-                            <p className=" font-extralight text-xs text-slate-600 text-justify">El ingreso de factores semanales es OPCIONAL, por defecto se establecera un 100%</p>
+                            {
+                                weeklyLimit !== "0" && weeklyLimit!== "" &&
+                                <Alert
+                                    type="information"
+                                    message="El ingreso de factores semanales es OPCIONAL, por defecto se establecera un 100%"
+                                />
+
+                            }
                         </div>
                     </div>
                     <div className="mx-auto">
