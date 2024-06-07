@@ -148,14 +148,14 @@ const Home: NextPageWithLayout = () => {
                     <div className="relative">
                         <input
                             type="text"
-                            id={i.toString()}
+                            id={`limit-${i.toString()}`}
                             className="block md:max-w-36 text-black px-2.5 pb-1.5 pt-3 w-full bg-transparent rounded-lg border border-gray-300 appearance-nonefocus:outline-none focus:ring-0 focus:border-blue-600 peer"
                             placeholder=" "
                             onChange={(e) => handleInputChangeLimit(i, e.target.value)}
                             value={limitWeek[i]}
                         />
                         <label
-                            htmlFor={i.toString()}
+                            htmlFor={`limit-${i.toString()}`}
                             className="absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                         >
                             {"Semana " + (i + 1)}
@@ -183,14 +183,14 @@ const Home: NextPageWithLayout = () => {
                     <div className="relative">
                         <input
                             type="text"
-                            id={i.toString()}
+                            id={`factor-${i.toString()}`}
                             className="block md:max-w-36 text-black px-2.5 pb-1.5 pt-3 w-full bg-transparent rounded-lg border border-gray-300 appearance-nonefocus:outline-none focus:ring-0 focus:border-blue-600 peer"
                             placeholder=" "
                             onChange={(e) => handleInputChangeFactor(i, e.target.value)}
                             value={factorWeek[i]}
                         />
                         <label
-                            htmlFor={i.toString()}
+                            htmlFor={`factor-${i.toString()}`}
                             className="absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                         >
                             {"Semana " + (i + 1)}
