@@ -145,13 +145,24 @@ const Home: NextPageWithLayout = () => {
             weeksElements.push(
                 <div className="flex flex-col gap-2 w-full sm:w-fit">
                     <label className="flex flex-col"></label>
-                    <input
-                        className="border p-2 rounded-lg max-w-36"
-                        onChange={(e) => handleInputChangeLimit(i, e.target.value)}
-                        placeholder={"Semana " + (i + 1)}
+                    <div className="relative">
+                        <input
+                            type="text"
+                            id={i.toString()}
+                            className="block md:max-w-36 text-black px-2.5 pb-1.5 pt-3 w-full bg-transparent rounded-lg border border-gray-300 appearance-nonefocus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            onChange={(e) => handleInputChangeLimit(i, e.target.value)}
+                            value={limitWeek[i]}
+                        />
+                        <label
+                            htmlFor={i.toString()}
+                            className="absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                        >
+                            {"Semana " + (i + 1)}
+                        </label>
+                        <p className="absolute grid w-5 top-2/4 right-3  -translate-y-2/4 font-medium ">kg</p>
+                    </div>
 
-                        value={limitWeek[i]}
-                    />
                 </div>
             )
         }
@@ -169,11 +180,24 @@ const Home: NextPageWithLayout = () => {
             weeksElements.push(
                 <div className="flex flex-col gap-2 w-full sm:w-fit">
                     <label className="flex flex-col"></label>
-                    <input
-                        className="border p-2 rounded-lg max-w-36"
-                        onChange={(e) => handleInputChangeFactor(i, e.target.value)}
-                        placeholder={"Semana " + (i + 1)}
-                        value={factorWeek[i]} />
+                    <div className="relative">
+                        <input
+                            type="text"
+                            id={i.toString()}
+                            className="block md:max-w-36 text-black px-2.5 pb-1.5 pt-3 w-full bg-transparent rounded-lg border border-gray-300 appearance-nonefocus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                            placeholder=" "
+                            onChange={(e) => handleInputChangeFactor(i, e.target.value)}
+                            value={factorWeek[i]}
+                        />
+                        <label
+                            htmlFor={i.toString()}
+                            className="absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                        >
+                            {"Semana " + (i + 1)}
+                        </label>
+                        <p className="absolute grid w-5 top-2/4 right-3  -translate-y-2/4 font-medium ">kg</p>
+                    </div>
+
                 </div>
             )
         }
@@ -184,21 +208,23 @@ const Home: NextPageWithLayout = () => {
         }
     }
     const handleInputChangeLimit = (id: number, value: string) => {
-        if (value !== "") {
-            const unformattedValue = value.replace(/\./g, '');
-            const formattedValue = new Intl.NumberFormat("es-CL").format(parseInt(unformattedValue));
+        const unformattedValue = value.replace(/\D/g, '');
+        if (unformattedValue !== "") {
+            const intValue = parseInt(unformattedValue, 10);
+            const formattedValue = new Intl.NumberFormat("es-CL").format(intValue);
             setLimitWeek({ ...limitWeek, [id]: formattedValue });
         } else {
             setLimitWeek({ ...limitWeek, [id]: "0" });
         }
     }
     const handleInputChangeFactor = (id: number, value: string) => {
-        if (value !== "") {
-            const unformattedValue = value.replace(/\./g, '');
-            const formattedValue = new Intl.NumberFormat("es-CL").format(parseInt(unformattedValue));
-            setFactorWeek({ ...factorWeek, [id]: formattedValue });
+        const unformattedValue = value.replace(/\D/g, '');
+        if (unformattedValue !== "") {
+            const intValue = parseInt(unformattedValue, 10);
+            const formattedValue = new Intl.NumberFormat("es-CL").format(intValue);
+            setFactorWeek({ ...limitWeek, [id]: formattedValue });
         } else {
-            setFactorWeek({ ...factorWeek, [id]: "0" });
+            setFactorWeek({ ...limitWeek, [id]: "0" });
         }
     }
     const handleInputChangeObjKg = (value: string) => {
@@ -245,7 +271,7 @@ const Home: NextPageWithLayout = () => {
     }
 
 
-
+    
     const formatNumberTooltip = (number: number): string => {
         return number.toLocaleString('es-ES') + " kg";
     }
@@ -396,7 +422,7 @@ const Home: NextPageWithLayout = () => {
                                 {weeksLimit()}
                             </div>
                             {
-                                weeklyLimit !== "0" && weeklyLimit!== "" &&
+                                weeklyLimit !== "0" && weeklyLimit !== "" &&
                                 <Alert
                                     type="warning"
                                     message="Por favor, establecer todos los limites semanales correspondiente, de lo contrario por defecto seran 0 Kg"
@@ -411,7 +437,7 @@ const Home: NextPageWithLayout = () => {
                                 {weeksFactor()}
                             </div>
                             {
-                                weeklyLimit !== "0" && weeklyLimit!== "" &&
+                                weeklyLimit !== "0" && weeklyLimit !== "" &&
                                 <Alert
                                     type="information"
                                     message="El ingreso de factores semanales es OPCIONAL, por defecto se establecera un 100%"
