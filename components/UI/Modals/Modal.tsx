@@ -144,7 +144,7 @@ export default function Modal({ open, onClose, action, type, message, children, 
     }
 
     return (
-        <div onClick={onClose} className={`fixed inset-0 flex justify-center items-center transition-colors  ${open ? "visible bg-black/20" : " invisible"}`}>
+        <div onClick={onClose} className={`fixed z-30 inset-0 flex justify-center items-center transition-colors  ${open ? "visible bg-black/20" : " invisible"}`}>
 
             <div onClick={(e) => e.stopPropagation()} className={`flex flex-col justify-center items-center bg-white p-6 rounded-xl shadow-lg min-w-80 gap-4 transition-all ${open ? "scale-100 opacity-100" : "scale-0 opacity-0"}`}>
                 <button className="fixed top-3 right-3 p-2 text-3xl" onClick={(e) => handleCancel(e)}><IoIosClose /></button>
