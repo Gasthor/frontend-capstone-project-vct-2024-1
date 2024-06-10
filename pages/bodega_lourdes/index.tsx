@@ -68,7 +68,13 @@ const Home: NextPageWithLayout = () => {
     const [factorWeek, setFactorWeek] = useState<{ [key: number]: string }>({})
     const [objKg, setObjKg] = useState("0")
 
-    const [data, setData] = useState()
+    const [data, setData] = useState<{
+        data: [{
+            Semana: string;
+            Kilos: number;
+        }][]
+        total: number;
+    } | undefined>(undefined)
 
     const getFileVendimia = () => {
         setLoadingFile(true)
@@ -228,8 +234,8 @@ const Home: NextPageWithLayout = () => {
         } else {
             newYearsSelected = newYearsSelected.filter(x => x !== year);
         }
-        if(newYearsSelected.length === 0 ){
-            newYearsSelected = newYearsSelected.sort((a,b) => a - b)
+        if (newYearsSelected.length === 0) {
+            newYearsSelected = newYearsSelected.sort((a, b) => a - b)
         }
         setYearsSelected(newYearsSelected.length > 0 ? newYearsSelected : undefined);
     }
@@ -248,7 +254,7 @@ const Home: NextPageWithLayout = () => {
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia/planificacion`, formData)
             .then((response: any | JSON) => {
                 toast.success(response.data.message, { id: toastId })
-                setData(response.data.data)
+                setData(response.data)
                 console.log(data)
             })
             .catch((e) => {
@@ -376,7 +382,7 @@ const Home: NextPageWithLayout = () => {
                             }
                         </div>
                         <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos por semana"} data={dataGraphic && dataGraphic.data}>
-                            <p>Grafico representativo a las vendimias {dataGraphic?.years} con un total de kilos procesados promedio de {dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</p>
+                            <p>Grafico representativo a las vendimias <span className=" font-medium">{dataGraphic?.years} </span>con un total de kilos procesados promedio de <span className=" font-medium">{dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</span></p>
                         </Modal>
 
                     </div>
@@ -456,27 +462,33 @@ const Home: NextPageWithLayout = () => {
                 <div className="min-h-[400px] w-full px-8">
                     {
                         data && (
-                            <ResponsiveContainer width="100%" height="100%" minHeight={"450px"}>
-                                <BarChart
-                                    width={300}
-                                    height={45}
-                                    data={data}
-                                    margin={{
-                                        top: 5,
-                                        right: 30,
-                                        left: 15,
-                                        bottom: 27,
-                                    }}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="Semana" orientation="bottom" label={{ value: "Semana", position: "bottom" }} tick={{ fontSize: tickFontSize }}>
-                                    </XAxis>
-                                    <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
-                                    <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
-                                    <Legend verticalAlign="top" height={36} />
-                                    <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                            <div className="flex flex-col gap-4 items-center">
+                                <ResponsiveContainer width="100%" height="100%" minHeight={"450px"}>
+                                    <BarChart
+                                        width={300}
+                                        height={45}
+                                        data={data.data}
+                                        margin={{
+                                            top: 5,
+                                            right: 30,
+                                            left: 15,
+                                            bottom: 27,
+                                        }}
+                                    >
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="Semana" orientation="bottom" label={{ value: "Semana", position: "bottom" }} tick={{ fontSize: tickFontSize }}>
+                                        </XAxis>
+                                        <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
+                                        <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
+                                        <Legend verticalAlign="top" height={36} />
+                                        <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                                <div className="w-full">
+                                    <p className="font-medium text-center w-fit">Total kilos planificados: <span className=" font-normal">{new Intl.NumberFormat("es-CL").format(data.total)} kg</span></p>
+                                </div>
+                            </div>
+
                         )
                     }
 

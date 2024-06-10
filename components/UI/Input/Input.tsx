@@ -57,7 +57,7 @@ export const Input: FC<Props> = ({
             )
         default:
             return (
-                <div className="relative">
+                <div className="relative w-full sm:w-fit">
                     <label className="flex flex-col">{title}</label>
                     <input
                         className="border p-2 rounded-lg w-full sm:w-fit"

@@ -29,6 +29,28 @@ export default function Modal({ open, onClose, action, type, message, children, 
         onClose()
     }
 
+    useEffect(() => {
+        const handleScroll = (e: Event) => {
+            if (open) {
+                e.preventDefault()
+                e.stopPropagation()
+            }
+        };
+
+        if (open) {
+            document.body.style.overflow = 'hidden'
+            window.addEventListener('scroll', handleScroll, { passive: false })
+        } else {
+            document.body.style.overflow = ''
+            window.removeEventListener('scroll', handleScroll)
+        }
+
+        return () => {
+            document.body.style.overflow = ''
+            window.removeEventListener('scroll', handleScroll)
+        };
+    }, [open])
+
     const typeModalRender = () => {
         switch (type) {
             case "Delete":
