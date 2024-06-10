@@ -75,7 +75,6 @@ const Home: NextPageWithLayout = () => {
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/`)
             .then((response: any | JSON) => {
                 setListFileVendimia(response.data)
-                console.log(response.data)
             })
             .catch(() => {
                 toast.error("Error al obtener datos de las vendimias, reintente más tarde")
@@ -142,8 +141,6 @@ const Home: NextPageWithLayout = () => {
                 toast.error("Error al obtener datos de las vendimias, reintente más tarde", { id: toastId });
             });
     }
-
-
     const weeksLimit = () => {
         const weeksElements = []
         const quantityWeeks = parseInt(weeklyLimit)
@@ -154,7 +151,7 @@ const Home: NextPageWithLayout = () => {
                     title={"Semana " + (i + 1)}
                     value={limitWeek[i]}
                     onChange={(e) => handleInputChangeLimit(i, e.target.value)}
-                    id={`factor-${i.toString()}`}
+                    id={`limit-${i.toString()}`}
                     type="out-label"
                     unit="kg"
                 />
@@ -169,9 +166,11 @@ const Home: NextPageWithLayout = () => {
 
     }
     const weeksFactor = () => {
-        const weeksElements = []
 
-        for (let i = 0; i < parseInt(weeklyLimit); i++) {
+        const weeksElements = []
+        const quantityWeeks = parseInt(weeklyLimit)
+
+        for (let i = 0; i < quantityWeeks; i++) {
             weeksElements.push(
                 <Input
                     title={"Semana " + (i + 1)}
@@ -205,10 +204,10 @@ const Home: NextPageWithLayout = () => {
         if (unformattedValue !== "") {
             const intValue = parseInt(unformattedValue, 10);
             const formattedValue = new Intl.NumberFormat("es-CL").format(intValue);
-            setFactorWeek({ ...limitWeek, [id]: formattedValue });
+            setFactorWeek({ ...factorWeek, [id]: formattedValue });
             console.log(factorWeek)
         } else {
-            setFactorWeek({ ...limitWeek, [id]: "0" });
+            setFactorWeek({ ...factorWeek, [id]: "0" });
         }
     }
     const handleInputChangeObjKg = (value: string) => {
@@ -258,8 +257,6 @@ const Home: NextPageWithLayout = () => {
             })
     }
 
-
-
     const formatNumberTooltip = (number: number): string => {
         return number.toLocaleString('es-ES') + " kg";
     }
@@ -306,7 +303,7 @@ const Home: NextPageWithLayout = () => {
                             <SkeletonListFiles />
                         ) : (
                             listFileVendimia &&
-                                listFileVendimia.length !== 0 ? (
+                                listFileVendimia.length > 0 ? (
                                 listFileVendimia.map((x) => (<ItemFile name={x.name} year={x.year} listFile={listFileVendimia} setListFile={setListFileVendimia} data={x.data} />))
                             ) :
                                 (
