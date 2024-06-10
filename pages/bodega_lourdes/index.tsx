@@ -22,6 +22,8 @@ import { Alert } from "@/components/UI/Alert/Alert";
 
 type GraphicData = {
     duration: number;
+    years: string;
+    total: number;
     data: {
         Semana: string;
         Kilos: number;
@@ -121,49 +123,42 @@ const Home: NextPageWithLayout = () => {
                 toast.error(`Error al desacargar ${fileName}, reintente mas tarde`, { id: toastId })
             })
     }
-    const getGraphic = () => {
+    ///////--------------------
+    const openGraphic = () => {
+        setOpenModalGraphic(true)
+    }
+
+    const getVendimia = () => {
+        setDataGraphic(undefined)
         const formData = new FormData();
-
         formData.append('years', JSON.stringify(yearsSelected));
-
+        const toastId = toast.loading("Obteniendo datos de las vendimias seleccionadas")
         axios.post(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia/`, formData)
             .then((response: any | JSON) => {
+                toast.success("Datos de vendimias seleccionadas obtenidos con exito", { id: toastId })
                 setDataGraphic(response.data);
-                console.log(response.data);
             })
             .catch(() => {
-                toast.error("Error al obtener datos de las vendimias, reintente más tarde");
+                toast.error("Error al obtener datos de las vendimias, reintente más tarde", { id: toastId });
             });
-        setOpenModalGraphic(true)
-        console.log(limitWeek)
     }
+
+
     const weeksLimit = () => {
         const weeksElements = []
         const quantityWeeks = parseInt(weeklyLimit)
 
         for (let i = 0; i < quantityWeeks; i++) {
             weeksElements.push(
-                <div className="flex flex-col gap-2 w-full sm:w-fit">
-                    <label className="flex flex-col"></label>
-                    <div className="relative">
-                        <input
-                            type="text"
-                            id={`limit-${i.toString()}`}
-                            className="block md:max-w-36 text-black px-2.5 pb-1.5 pt-3 w-full bg-transparent rounded-lg border border-gray-300 appearance-nonefocus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            onChange={(e) => handleInputChangeLimit(i, e.target.value)}
-                            value={limitWeek[i]}
-                        />
-                        <label
-                            htmlFor={`limit-${i.toString()}`}
-                            className="absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                        >
-                            {"Semana " + (i + 1)}
-                        </label>
-                        <p className="absolute grid w-5 top-2/4 right-3  -translate-y-2/4 font-medium ">kg</p>
-                    </div>
+                <Input
+                    title={"Semana " + (i + 1)}
+                    value={limitWeek[i]}
+                    onChange={(e) => handleInputChangeLimit(i, e.target.value)}
+                    id={`factor-${i.toString()}`}
+                    type="out-label"
+                    unit="kg"
+                />
 
-                </div>
             )
         }
         if (weeksElements.length === 0) {
@@ -178,27 +173,14 @@ const Home: NextPageWithLayout = () => {
 
         for (let i = 0; i < parseInt(weeklyLimit); i++) {
             weeksElements.push(
-                <div className="flex flex-col gap-2 w-full sm:w-fit">
-                    <label className="flex flex-col"></label>
-                    <div className="relative">
-                        <input
-                            type="text"
-                            id={`factor-${i.toString()}`}
-                            className="block md:max-w-36 text-black px-2.5 pb-1.5 pt-3 w-full bg-transparent rounded-lg border border-gray-300 appearance-nonefocus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            onChange={(e) => handleInputChangeFactor(i, e.target.value)}
-                            value={factorWeek[i]}
-                        />
-                        <label
-                            htmlFor={`factor-${i.toString()}`}
-                            className="absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                        >
-                            {"Semana " + (i + 1)}
-                        </label>
-                        <p className="absolute grid w-5 top-2/4 right-3  -translate-y-2/4 font-medium ">kg</p>
-                    </div>
-
-                </div>
+                <Input
+                    title={"Semana " + (i + 1)}
+                    value={factorWeek[i]}
+                    onChange={(e) => handleInputChangeFactor(i, e.target.value)}
+                    id={`factor-${i.toString()}`}
+                    type="out-label"
+                    unit="%"
+                />
             )
         }
         if (weeksElements.length === 0) {
@@ -218,16 +200,19 @@ const Home: NextPageWithLayout = () => {
         }
     }
     const handleInputChangeFactor = (id: number, value: string) => {
+        console.log(id, value)
         const unformattedValue = value.replace(/\D/g, '');
         if (unformattedValue !== "") {
             const intValue = parseInt(unformattedValue, 10);
             const formattedValue = new Intl.NumberFormat("es-CL").format(intValue);
             setFactorWeek({ ...limitWeek, [id]: formattedValue });
+            console.log(factorWeek)
         } else {
             setFactorWeek({ ...limitWeek, [id]: "0" });
         }
     }
     const handleInputChangeObjKg = (value: string) => {
+        console.log("hola")
         if (value !== "") {
             const unformattedValue = value.replace(/\./g, '');
             const formattedValue = new Intl.NumberFormat("es-CL").format(parseInt(unformattedValue));
@@ -243,6 +228,9 @@ const Home: NextPageWithLayout = () => {
             newYearsSelected.push(year);
         } else {
             newYearsSelected = newYearsSelected.filter(x => x !== year);
+        }
+        if(newYearsSelected.length === 0 ){
+            newYearsSelected = newYearsSelected.sort((a,b) => a - b)
         }
         setYearsSelected(newYearsSelected.length > 0 ? newYearsSelected : undefined);
     }
@@ -271,7 +259,7 @@ const Home: NextPageWithLayout = () => {
     }
 
 
-    
+
     const formatNumberTooltip = (number: number): string => {
         return number.toLocaleString('es-ES') + " kg";
     }
@@ -358,7 +346,7 @@ const Home: NextPageWithLayout = () => {
                 </Modal>
 
             </Container>
-            <div className="flex gap-2 flex-col md:flex-row mx-auto w-full md:w-fit px-4">
+            <div className="flex gap-4 flex-col md:flex-row mx-auto w-full md:w-fit px-4">
                 <ButtonPrincipal title={"Cargar archivo"} action={() => setOpenModalLoadFile(true)}>
                     <p className="text-white my-auto ml-3 text-xl">
                         <FiUpload />
@@ -389,66 +377,78 @@ const Home: NextPageWithLayout = () => {
                                     </div>
                                 ))
                             }
-                            {
-                                yearsSelected && yearsSelected?.length > 0 && <ButtonSecundary title={"Ver gráfico"} action={() => getGraphic()} />
-                            }
                         </div>
-                        <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos en vendimia"} data={dataGraphic && dataGraphic.data}>
-
+                        <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos por semana"} data={dataGraphic && dataGraphic.data}>
+                            <p>Grafico representativo a las vendimias {dataGraphic?.years} con un total de kilos procesados promedio de {dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</p>
                         </Modal>
 
                     </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <h3 className="mr-4 min-w-40 md:text-end">Duración:</h3>
-                        <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
-                            <Select name="" value={weeklyLimit} setValue={setWeeklyLimit} isDisable={yearsSelected ? false : true} list={dataGraphic?.weeks} />
-                        </div>
-
+                    <div className="flex flex-col md:flex-row w-full gap-4 justify-center">
+                        <ButtonSecundary title={dataGraphic ? "Actualizar información" : "Obtener información"} action={() => getVendimia()} isDisable={yearsSelected === undefined} messageDisable={dataGraphic ? "Actualizar información" : "Obtener información"} />
+                        <ButtonSecundary title={"Ver gráfico"} action={() => openGraphic()} isDisable={dataGraphic ? false : true} messageDisable="Ver gráfico" />
                     </div>
+                    {
+                        dataGraphic &&
+                        <div className="flex flex-col transition-transform translate-x-1 z-0 gap-4">
+                            <div className="flex flex-col md:flex-row md:items-center">
+                                <h3 className="mr-4 min-w-40 md:text-end">Duración:</h3>
+                                <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                                    <Select name="" value={weeklyLimit} setValue={setWeeklyLimit} isDisable={yearsSelected ? false : true} list={dataGraphic?.weeks} />
+                                </div>
 
-                    <div className="flex flex-col md:flex-row md:items-center ">
-                        <h3 className="mr-4 min-w-40 md:text-end">Kilogramos objetivos:</h3>
-                        <input
-                            className="border p-2 rounded-lg"
-                            onChange={(e) => handleInputChangeObjKg(e.target.value)}
-                            value={objKg}
-                        />
-                    </div>
-
-                    <div className="flex flex-col md:flex-row">
-                        <h3 className="mr-4 min-w-40 md:text-end md:pt-6">Limite semanal:</h3>
-                        <div className="flex flex-col">
-                            <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
-                                {weeksLimit()}
                             </div>
-                            {
-                                weeklyLimit !== "0" && weeklyLimit !== "" &&
-                                <Alert
-                                    type="warning"
-                                    message="Por favor, establecer todos los limites semanales correspondiente, de lo contrario por defecto seran 0 Kg"
-                                />
-                            }
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row ">
-                        <h3 className="mr-4 min-w-40 md:text-end md:pt-6">Factor semanal:</h3>
-                        <div className="flex flex-col">
-                            <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
-                                {weeksFactor()}
-                            </div>
-                            {
-                                weeklyLimit !== "0" && weeklyLimit !== "" &&
-                                <Alert
-                                    type="information"
-                                    message="El ingreso de factores semanales es OPCIONAL, por defecto se establecera un 100%"
+
+                            <div className="flex flex-col md:flex-row md:items-center ">
+                                <h3 className="mr-4 min-w-40 md:text-end">Kilogramos objetivos:</h3>
+                                <Input
+                                    title=""
+                                    onChange={(e) => handleInputChangeObjKg(e.target.value)}
+                                    value={objKg}
+                                    unit="kg"
                                 />
 
-                            }
+                            </div>
+
+                            <div className="flex flex-col md:flex-row">
+                                <h3 className="mr-4 min-w-40 md:text-end md:pt-6">Limite semanal:</h3>
+                                <div className="flex flex-col">
+                                    <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                                        {weeksLimit()}
+                                    </div>
+                                    {
+                                        weeklyLimit !== "0" && weeklyLimit !== "" &&
+                                        <Alert
+                                            type="warning"
+                                            message="Por favor, establecer todos los limites semanales correspondiente, de lo contrario por defecto seran 0 Kg"
+                                        />
+                                    }
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col md:flex-row ">
+                                <h3 className="mr-4 min-w-40 md:text-end md:pt-6">Factor semanal:</h3>
+                                <div className="flex flex-col">
+                                    <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                                        {weeksFactor()}
+                                    </div>
+                                    {
+                                        weeklyLimit !== "0" && weeklyLimit !== "" &&
+                                        <Alert
+                                            type="information"
+                                            message="El ingreso de factores semanales es OPCIONAL, por defecto se establecera un 100%"
+                                        />
+
+                                    }
+                                </div>
+                            </div>
+
+                            <div className="mx-auto">
+                                <ButtonPrincipal title={"Iniciar planificación"} action={() => startPlanning()} isDisable={weeklyLimit !== "0" && objKg > "0" ? false : true} messageDisable="Iniciar planificación" />
+                            </div>
                         </div>
-                    </div>
-                    <div className="mx-auto">
-                        <ButtonPrincipal title={"Iniciar planificación"} action={() => startPlanning()} isDisable={weeklyLimit !== "0" && objKg > "0" ? false : true} messageDisable="Iniciar planificación" />
-                    </div>
+
+                    }
+
 
                 </div>
             </Container>
