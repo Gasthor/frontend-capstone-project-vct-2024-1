@@ -65,7 +65,7 @@ const Home: NextPageWithLayout = () => {
     const [weeklyLimit, setWeeklyLimit] = useState("0")
 
     const [yearsSelected, setYearsSelected] = useState<number[]>()
-    const [limitWeek, setLimitWeek] = useState<{ [key: number]: string }>({})
+    const [limitWeek, setLimitWeek] = useState<{ [key: number]: string | undefined }>({})
     const [factorWeek, setFactorWeek] = useState<{ [key: number]: string }>({})
     const [objKg, setObjKg] = useState("0")
 
@@ -236,7 +236,7 @@ const Home: NextPageWithLayout = () => {
             newYearsSelected = newYearsSelected.filter(x => x !== year);
         }
         if (newYearsSelected.length === 0) {
-            newYearsSelected = newYearsSelected.sort((a, b) => a - b)
+            newYearsSelected = newYearsSelected.sort((a, b) => b - a)
         }
         setYearsSelected(newYearsSelected.length > 0 ? newYearsSelected : undefined);
     }
@@ -260,7 +260,7 @@ const Home: NextPageWithLayout = () => {
             })
             .catch((e) => {
                 console.log(e)
-                toast.error(e.response.data.error, { id: toastId })
+                toast.error(e.message, { id: toastId })
             })
     }
 
@@ -298,6 +298,22 @@ const Home: NextPageWithLayout = () => {
     useEffect(() => {
         getFileVendimia()
     }, [])
+
+    useEffect(() => {
+
+        Object.keys(limitWeek).forEach(key => {
+            if (parseInt(key) > parseInt(weeklyLimit) - 1) {
+                delete limitWeek[parseInt(key)];
+            }
+        });
+        Object.keys(factorWeek).forEach(key => {
+            if (parseInt(key) > parseInt(weeklyLimit) - 1) {
+                delete factorWeek[parseInt(key)];
+            }
+        });
+
+        console.log(limitWeek)
+    }, [weeklyLimit])
 
     return (
         <>
@@ -375,18 +391,18 @@ const Home: NextPageWithLayout = () => {
                                     <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
                                         {
                                             listFileVendimia && listFileVendimia.length > 0 ?
-                                            listFileVendimia.map((x) => (
-                                                <div className="flex items-center me-4">
-                                                    <input
-                                                        className="w-5 h-5 appearance-none border-2 cursor-pointer border-orange-vct/80  rounded-md mr-2 hover:border-orange-vct checked:bg-no-repeat checked:bg-center checked:border-orange-vct checked:bg-orange-vct/60 transition-colors duration-500"
-                                                        type="checkbox"
-                                                        value={x.year}
-                                                        onChange={(x) => isYearInList(parseInt(x.target.value))} />
-                                                    <label className="ms-2 text-sm font-medium text-gray-900 ">{x.year}</label>
-                                                </div>
-                                            ))
-                                            :
-                                            <p>No hay vendimias cargadas.</p>
+                                                listFileVendimia.map((x) => (
+                                                    <div className="flex items-center me-4">
+                                                        <input
+                                                            className="w-5 h-5 appearance-none border-2 cursor-pointer border-orange-vct/80  rounded-md mr-2 hover:border-orange-vct checked:bg-no-repeat checked:bg-center checked:border-orange-vct checked:bg-orange-vct/60 transition-colors duration-500"
+                                                            type="checkbox"
+                                                            value={x.year}
+                                                            onChange={(x) => isYearInList(parseInt(x.target.value))} />
+                                                        <label className="ms-2 text-sm font-medium text-gray-900 ">{x.year}</label>
+                                                    </div>
+                                                ))
+                                                :
+                                                <p>No hay vendimias cargadas.</p>
                                         }
                                     </div>
                                     <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos por semana"} data={dataGraphic && dataGraphic.data}>

@@ -38,7 +38,7 @@ export const SkeletonSelectVendimia: FC<{}> = ({
                 </div>
 
             </div>
-            <div className="flex flex-col md:flex-row w-full gap-4 justify-center  animate-pulse">
+            <div className="flex flex-col md:flex-row w-full gap-4 justify-center animate-pulse">
                 <button className="h-8 w-full md:w-24 bg-neutral-200 rounded-md"></button>
                 <button className="h-8 w-fullmd:w-24 bg-neutral-200 rounded-md"></button>
             </div>
