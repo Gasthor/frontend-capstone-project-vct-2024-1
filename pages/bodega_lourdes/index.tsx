@@ -19,6 +19,7 @@ import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Le
 import { PiWarning } from "react-icons/pi";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { Alert } from "@/components/UI/Alert/Alert";
+import { SkeletonSelectVendimia } from "@/components/UI/Skeleton/SkeletonSelectVendimia";
 
 type GraphicData = {
     duration: number;
@@ -302,7 +303,7 @@ const Home: NextPageWithLayout = () => {
         <>
             <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación Táctica Bodega Lourdes</h1>
             <Container>
-                <TitleContainer number={1} title="Datos historicos" />
+                <TitleContainer number={1} title="Datos históricos" />
                 <div className="flex flex-row overflow-x-auto mt-3 min-h-48 ">
                     {
                         loadingFile ? (
@@ -364,32 +365,46 @@ const Home: NextPageWithLayout = () => {
             <Container>
                 <TitleContainer number={2} title={"Configuración de vendimia"} />
                 <div className="flex flex-col my-4 md:mx-4 gap-4">
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <h3 className="mr-4 min-w-40 md:text-end">Seleccionar años:</h3>
-                        <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
-                            {
-                                listFileVendimia && listFileVendimia.length > 0 &&
-                                listFileVendimia.map((x) => (
-                                    <div className="flex items-center me-4">
-                                        <input
-                                            className="w-5 h-5 appearance-none border-2 cursor-pointer border-orange-vct/80  rounded-md mr-2 hover:border-orange-vct checked:bg-no-repeat checked:bg-center checked:border-orange-vct checked:bg-orange-vct/60 transition-colors duration-500"
-                                            type="checkbox"
-                                            value={x.year}
-                                            onChange={(x) => isYearInList(parseInt(x.target.value))} />
-                                        <label className="ms-2 text-sm font-medium text-gray-900 ">{x.year}</label>
+                    {
+                        loadingFile ? (
+                            <SkeletonSelectVendimia />
+                        ) : (
+                            <>
+                                <div className="flex flex-col md:flex-row md:items-center">
+                                    <h3 className="mr-4 min-w-40 md:text-end">Seleccionar años:</h3>
+                                    <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                                        {
+                                            listFileVendimia && listFileVendimia.length > 0 ?
+                                            listFileVendimia.map((x) => (
+                                                <div className="flex items-center me-4">
+                                                    <input
+                                                        className="w-5 h-5 appearance-none border-2 cursor-pointer border-orange-vct/80  rounded-md mr-2 hover:border-orange-vct checked:bg-no-repeat checked:bg-center checked:border-orange-vct checked:bg-orange-vct/60 transition-colors duration-500"
+                                                        type="checkbox"
+                                                        value={x.year}
+                                                        onChange={(x) => isYearInList(parseInt(x.target.value))} />
+                                                    <label className="ms-2 text-sm font-medium text-gray-900 ">{x.year}</label>
+                                                </div>
+                                            ))
+                                            :
+                                            <p>No hay vendimias cargadas.</p>
+                                        }
                                     </div>
-                                ))
-                            }
-                        </div>
-                        <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos por semana"} data={dataGraphic && dataGraphic.data}>
-                            <p>Grafico representativo a las vendimias <span className=" font-medium">{dataGraphic?.years} </span>con un total de kilos procesados promedio de <span className=" font-medium">{dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</span></p>
-                        </Modal>
+                                    <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos por semana"} data={dataGraphic && dataGraphic.data}>
+                                        <p>Gráfico representativo a las vendimias <span className=" font-medium">{dataGraphic?.years} </span>con un total de kilos procesados promedio de <span className=" font-medium">{dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</span></p>
+                                    </Modal>
+                                </div>
+                                <div className="flex flex-col md:flex-row w-full gap-4 justify-center">
+                                    <ButtonSecundary title={dataGraphic ? "Actualizar información" : "Obtener información"} action={() => getVendimia()} isDisable={yearsSelected === undefined} messageDisable={dataGraphic ? "Actualizar información" : "Obtener información"} />
+                                    <ButtonSecundary title={"Ver gráfico"} action={() => openGraphic()} isDisable={dataGraphic ? false : true} messageDisable="Ver gráfico" />
+                                </div>
+                            </>
 
-                    </div>
-                    <div className="flex flex-col md:flex-row w-full gap-4 justify-center">
-                        <ButtonSecundary title={dataGraphic ? "Actualizar información" : "Obtener información"} action={() => getVendimia()} isDisable={yearsSelected === undefined} messageDisable={dataGraphic ? "Actualizar información" : "Obtener información"} />
-                        <ButtonSecundary title={"Ver gráfico"} action={() => openGraphic()} isDisable={dataGraphic ? false : true} messageDisable="Ver gráfico" />
-                    </div>
+                        )
+                    }
+
+
+
+
                     {
                         dataGraphic &&
                         <div className="flex flex-col transition-transform translate-x-1 z-0 gap-4">
