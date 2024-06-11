@@ -7,7 +7,7 @@ export const SkeletonSelectVendimia: FC<{}> = ({
     return (
         <>
             <div className="flex flex-col md:flex-row md:items-center animate-pulse">
-                <h3 className="ml-8 mr-4  md:text-end w-28 h-6 rounded-md bg-neutral-200"></h3>
+                <h3 className="sm:ml-8 mr-4  md:text-end w-28 h-6 rounded-md bg-neutral-200"></h3>
                 <div className="flex flex-col md:flex-row gap-3 flex-wrap my-2">
 
                     <div className="flex items-center me-4">
@@ -39,8 +39,8 @@ export const SkeletonSelectVendimia: FC<{}> = ({
 
             </div>
             <div className="flex flex-col md:flex-row w-full gap-4 justify-center  animate-pulse">
-                <button className="h-8 w-24 bg-neutral-200 rounded-md"></button>
-                <button className="h-8 w-24 bg-neutral-200 rounded-md"></button>
+                <button className="h-8 w-full md:w-24 bg-neutral-200 rounded-md"></button>
+                <button className="h-8 w-fullmd:w-24 bg-neutral-200 rounded-md"></button>
             </div>
         </>
 
