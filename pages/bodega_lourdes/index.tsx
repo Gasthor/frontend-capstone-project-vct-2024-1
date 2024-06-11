@@ -65,8 +65,8 @@ const Home: NextPageWithLayout = () => {
     const [weeklyLimit, setWeeklyLimit] = useState("0")
 
     const [yearsSelected, setYearsSelected] = useState<number[]>()
-    const [limitWeek, setLimitWeek] = useState<{ [key: number]: string | undefined }>({})
-    const [factorWeek, setFactorWeek] = useState<{ [key: number]: string }>({})
+    const [limitWeek, setLimitWeek] = useState<{ [key: number]: string }>({})
+    const [factorWeek, setFactorWeek] = useState<{ [key: number]: string | undefined }>({})
     const [objKg, setObjKg] = useState("0")
 
     const [data, setData] = useState<{
@@ -157,12 +157,11 @@ const Home: NextPageWithLayout = () => {
                 <Input
                     title={"Semana " + (i + 1)}
                     value={limitWeek[i]}
-                    onChange={(e) => handleInputChangeLimit(i, e.target.value)}
+                    onChange={(e) => handleInputChangeLimit(i, e)}
                     id={`limit-${i.toString()}`}
                     type="out-label"
                     unit="kg"
                 />
-
             )
         }
         if (weeksElements.length === 0) {
@@ -182,7 +181,7 @@ const Home: NextPageWithLayout = () => {
                 <Input
                     title={"Semana " + (i + 1)}
                     value={factorWeek[i]}
-                    onChange={(e) => handleInputChangeFactor(i, e.target.value)}
+                    onChange={(e) => handleInputChangeFactor(i, e)}
                     id={`factor-${i.toString()}`}
                     type="out-label"
                     unit="%"
@@ -195,8 +194,9 @@ const Home: NextPageWithLayout = () => {
             return weeksElements
         }
     }
-    const handleInputChangeLimit = (id: number, value: string) => {
-        const unformattedValue = value.replace(/\D/g, '');
+    const handleInputChangeLimit = (id: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        const unformattedValue = event.target.value.replace(/\D/g, '');
+        event.target.classList.remove("border-red-500")
         if (unformattedValue !== "") {
             const intValue = parseInt(unformattedValue, 10);
             const formattedValue = new Intl.NumberFormat("es-CL").format(intValue);
@@ -205,17 +205,25 @@ const Home: NextPageWithLayout = () => {
             setLimitWeek({ ...limitWeek, [id]: "0" });
         }
     }
-    const handleInputChangeFactor = (id: number, value: string) => {
-        console.log(id, value)
-        const unformattedValue = value.replace(/\D/g, '');
+    const handleInputChangeFactor = (id: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        const unformattedValue = event.target.value.replace(/\D/g, '');
         if (unformattedValue !== "") {
             const intValue = parseInt(unformattedValue, 10);
             const formattedValue = new Intl.NumberFormat("es-CL").format(intValue);
             setFactorWeek({ ...factorWeek, [id]: formattedValue });
             console.log(factorWeek)
         } else {
-            setFactorWeek({ ...factorWeek, [id]: "0" });
+            const newFactorWeek = { ...factorWeek };
+            delete newFactorWeek[id];
+            setFactorWeek(newFactorWeek);
         }
+        
+        if (parseInt(unformattedValue) === 0){
+            event.target.classList.add("border-amber-400", "focus:border-amber-400", "focus:ring-amber-400")
+        }else{
+            event.target.classList.remove("border-amber-400", "focus:border-amber-400", "focus:ring-amber-400")
+        } 
+
     }
     const handleInputChangeObjKg = (value: string) => {
         console.log("hola")
@@ -235,12 +243,28 @@ const Home: NextPageWithLayout = () => {
         } else {
             newYearsSelected = newYearsSelected.filter(x => x !== year);
         }
-        if (newYearsSelected.length === 0) {
-            newYearsSelected = newYearsSelected.sort((a, b) => b - a)
+        if (newYearsSelected.length > 1) {
+            newYearsSelected = newYearsSelected.sort((a, b) => a - b)
         }
         setYearsSelected(newYearsSelected.length > 0 ? newYearsSelected : undefined);
+        console.log(yearsSelected)
     }
     const startPlanning = () => {
+        const inputs = Array.from(document.querySelectorAll('#weeksLimit input[type="text"]')) as HTMLInputElement[];       
+        let hasEmptyInputs = false
+        inputs.forEach((input: HTMLInputElement) => {
+            if (input.value.trim() === "") {
+                input.classList.add('border-red-500')
+                hasEmptyInputs = true
+            } else {
+                input.classList.remove('border-red-500')
+            }
+        })
+        if (hasEmptyInputs) {
+            toast.error("Por favor complete todos los campos obligatorios.")
+            return
+        }
+
 
         const formData = new FormData()
         formData.append("years", JSON.stringify(yearsSelected))
@@ -446,7 +470,7 @@ const Home: NextPageWithLayout = () => {
                             <div className="flex flex-col md:flex-row">
                                 <h3 className="mr-4 min-w-40 md:text-end md:pt-6">Limite semanal:</h3>
                                 <div className="flex flex-col">
-                                    <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
+                                    <div id="weeksLimit" className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
                                         {weeksLimit()}
                                     </div>
                                     {
