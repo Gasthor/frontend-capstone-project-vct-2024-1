@@ -17,8 +17,7 @@ import { Select } from "@/components/UI/Input/Select";
 import { ButtonSecundary } from "@/components/UI/Buttons/ButtonSecundary";
 import { Alert } from "@/components/UI/Alert/Alert";
 import { SkeletonSelectVendimia } from "@/components/UI/Skeleton/SkeletonSelectVendimia";
-import { BarRechart } from "@/components/UI/Chart/BarRechart";
-import { ChartAndTable } from "./ChartAndTable";
+import ChartAndTable from "./ChartAndTable";
 
 type GraphicData = {
     duration: number;
@@ -473,8 +472,6 @@ const Home: NextPageWithLayout = () => {
             {
                 data && <ChartAndTable data={data} />
             }
-
-            
 
             <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>

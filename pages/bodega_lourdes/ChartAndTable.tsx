@@ -23,7 +23,7 @@ interface Props {
 }
 
 
-export const ChartAndTable: FC<Props> = ({
+const ChartAndTable: FC<Props> = ({
     data
 }) => {
     const [selectedWeek, setSelectedWeek] = useState<number | undefined>(undefined);
@@ -108,3 +108,5 @@ export const ChartAndTable: FC<Props> = ({
 
     )
 }
+
+export default ChartAndTable
