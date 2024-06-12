@@ -15,11 +15,10 @@ import { SkeletonListFiles } from "@/components/UI/Skeleton/SkeletonListFiles";
 import { FiDownload, FiUpload } from "react-icons/fi";
 import { Select } from "@/components/UI/Input/Select";
 import { ButtonSecundary } from "@/components/UI/Buttons/ButtonSecundary";
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Rectangle } from "recharts";
-import { PiWarning } from "react-icons/pi";
-import { IoIosInformationCircleOutline } from "react-icons/io";
 import { Alert } from "@/components/UI/Alert/Alert";
 import { SkeletonSelectVendimia } from "@/components/UI/Skeleton/SkeletonSelectVendimia";
+import { BarRechart } from "@/components/UI/Chart/BarRechart";
+import { ChartAndTable } from "./ChartAndTable";
 
 type GraphicData = {
     duration: number;
@@ -70,12 +69,22 @@ const Home: NextPageWithLayout = () => {
     const [objKg, setObjKg] = useState("0")
 
     const [data, setData] = useState<{
-        data: [{
+        data: {
             Semana: string;
             Kilos: number;
-        }][]
+        }[]
         total: number;
+        ranking: {
+            NUM_SEMANA: number
+            AREA: string
+            FAMILIA: string
+            KILOS_ENTREGADOS: number
+            TOTAL_KILOS: number
+            PORCENTAJE_PARTICIPACION: number
+        }[]
     } | undefined>(undefined)
+
+    
 
     const getFileVendimia = () => {
         setLoadingFile(true)
@@ -129,11 +138,6 @@ const Home: NextPageWithLayout = () => {
                 toast.error(`Error al desacargar ${fileName}, reintente mas tarde`, { id: toastId })
             })
     }
-    ///////--------------------
-    const openGraphic = () => {
-        setOpenModalGraphic(true)
-    }
-
     const getVendimia = () => {
         setDataGraphic(undefined)
         const formData = new FormData();
@@ -211,18 +215,17 @@ const Home: NextPageWithLayout = () => {
             const intValue = parseInt(unformattedValue, 10);
             const formattedValue = new Intl.NumberFormat("es-CL").format(intValue);
             setFactorWeek({ ...factorWeek, [id]: formattedValue });
-            console.log(factorWeek)
         } else {
             const newFactorWeek = { ...factorWeek };
             delete newFactorWeek[id];
             setFactorWeek(newFactorWeek);
         }
-        
-        if (parseInt(unformattedValue) === 0){
+
+        if (parseInt(unformattedValue) === 0) {
             event.target.classList.add("border-amber-400", "focus:border-amber-400", "focus:ring-amber-400")
-        }else{
+        } else {
             event.target.classList.remove("border-amber-400", "focus:border-amber-400", "focus:ring-amber-400")
-        } 
+        }
 
     }
     const handleInputChangeObjKg = (value: string) => {
@@ -247,10 +250,9 @@ const Home: NextPageWithLayout = () => {
             newYearsSelected = newYearsSelected.sort((a, b) => a - b)
         }
         setYearsSelected(newYearsSelected.length > 0 ? newYearsSelected : undefined);
-        console.log(yearsSelected)
     }
     const startPlanning = () => {
-        const inputs = Array.from(document.querySelectorAll('#weeksLimit input[type="text"]')) as HTMLInputElement[];       
+        const inputs = Array.from(document.querySelectorAll('#weeksLimit input[type="text"]')) as HTMLInputElement[];
         let hasEmptyInputs = false
         inputs.forEach((input: HTMLInputElement) => {
             if (input.value.trim() === "") {
@@ -264,7 +266,6 @@ const Home: NextPageWithLayout = () => {
             toast.error("Por favor complete todos los campos obligatorios.")
             return
         }
-
 
         const formData = new FormData()
         formData.append("years", JSON.stringify(yearsSelected))
@@ -280,51 +281,17 @@ const Home: NextPageWithLayout = () => {
             .then((response: any | JSON) => {
                 toast.success(response.data.message, { id: toastId })
                 setData(response.data)
-                console.log(data)
             })
             .catch((e) => {
-                console.log(e)
                 toast.error(e.message, { id: toastId })
             })
     }
-
-    const formatNumberTooltip = (number: number): string => {
-        return number.toLocaleString('es-ES') + " kg";
-    }
-    const formatNumber = (number: number): string => {
-        if (number >= 1000000) {
-            return (number / 1000000).toFixed(1) + ' M'
-        } else if (number >= 1000) {
-            return (number / 1000).toFixed(1) + 'k'
-        } else {
-            return number.toString()
-        }
-    }
-    const formatTooltipValue = (value: string | number | (string | number)[]): string => {
-        if (Array.isArray(value)) {
-            return value.map(v => (typeof v === 'number' ? formatNumber(v) : v)).join(', ')
-        }
-        return typeof value === 'number' ? formatNumberTooltip(value) : value
-    }
-    const formatTooltipLabel = (label: string): string => {
-        return `Semana ${label}`
-    }
-    const [tickFontSize, setTickFontSize] = useState(12);
-
-    const handleResize = () => {
-        if (window.innerWidth < 768) { // Ancho típico para considerar dispositivo móvil
-            setTickFontSize(10);
-        } else {
-            setTickFontSize(14);
-        }
-    };
 
     useEffect(() => {
         getFileVendimia()
     }, [])
 
     useEffect(() => {
-
         Object.keys(limitWeek).forEach(key => {
             if (parseInt(key) > parseInt(weeklyLimit) - 1) {
                 delete limitWeek[parseInt(key)];
@@ -335,8 +302,6 @@ const Home: NextPageWithLayout = () => {
                 delete factorWeek[parseInt(key)];
             }
         });
-
-        console.log(limitWeek)
     }, [weeklyLimit])
 
     return (
@@ -381,7 +346,6 @@ const Home: NextPageWithLayout = () => {
                     <Input title={"Calidad"} value={quality} setValue={setQuality} />
                     <Input title={"Grados Brix"} value={brix} setValue={setBrix} />
                     <Input title={"Temperatura"} value={temperature} setValue={setTemperature} />
-
 
                     <div className="flex flex-col justify-center items-center gap-2">
                         <Input title={"Color variedad"} value={color} setValue={setColor} />
@@ -435,15 +399,12 @@ const Home: NextPageWithLayout = () => {
                                 </div>
                                 <div className="flex flex-col md:flex-row w-full gap-4 justify-center">
                                     <ButtonSecundary title={dataGraphic ? "Actualizar información" : "Obtener información"} action={() => getVendimia()} isDisable={yearsSelected === undefined} messageDisable={dataGraphic ? "Actualizar información" : "Obtener información"} />
-                                    <ButtonSecundary title={"Ver gráfico"} action={() => openGraphic()} isDisable={dataGraphic ? false : true} messageDisable="Ver gráfico" />
+                                    <ButtonSecundary title={"Ver gráfico"} action={() => setOpenModalGraphic(true)} isDisable={dataGraphic ? false : true} messageDisable="Ver gráfico" />
                                 </div>
                             </>
 
                         )
                     }
-
-
-
 
                     {
                         dataGraphic &&
@@ -507,52 +468,13 @@ const Home: NextPageWithLayout = () => {
 
                     }
 
-
                 </div>
             </Container>
+            {
+                data && <ChartAndTable data={data} />
+            }
 
-
-            <Container>
-                <TitleContainer number={3} title={"Resultados de planificación"} />
-                <div className="min-h-[400px] w-full px-8">
-                    {
-                        data && (
-                            <div className="flex flex-col gap-4 items-center">
-                                <ResponsiveContainer width="100%" height="100%" minHeight={"450px"}>
-                                    <BarChart
-                                        width={300}
-                                        height={45}
-                                        data={data.data}
-                                        margin={{
-                                            top: 5,
-                                            right: 30,
-                                            left: 15,
-                                            bottom: 27,
-                                        }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="Semana" orientation="bottom" label={{ value: "Semana", position: "bottom" }} tick={{ fontSize: tickFontSize }}>
-                                        </XAxis>
-                                        <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
-                                        <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
-                                        <Legend verticalAlign="top" height={36} />
-                                        <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                                <div className="w-full">
-                                    <p className="font-medium text-center w-fit">Total kilos planificados: <span className=" font-normal">{new Intl.NumberFormat("es-CL").format(data.total)} kg</span></p>
-                                </div>
-                            </div>
-
-                        )
-                    }
-
-
-
-                </div>
-            </Container>
-
-
+            
 
             <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>
