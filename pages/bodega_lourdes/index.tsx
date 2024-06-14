@@ -68,6 +68,14 @@ const Home: NextPageWithLayout = () => {
     const [objKg, setObjKg] = useState("0")
 
     const [data, setData] = useState<{
+        contract_producer: {
+            AREA: string
+            FAMILIA: string
+            CONTRATO: number
+            PRODUCTOR : string
+            NUM_SEMANA: number
+            KILOS_ENTREGADOS : number
+        }[]
         data: {
             Semana: string;
             Kilos: number;
@@ -81,6 +89,7 @@ const Home: NextPageWithLayout = () => {
             TOTAL_KILOS: number
             PORCENTAJE_PARTICIPACION: number
         }[]
+        years: [number]
     } | undefined>(undefined)
 
     
@@ -280,6 +289,7 @@ const Home: NextPageWithLayout = () => {
             .then((response: any | JSON) => {
                 toast.success(response.data.message, { id: toastId })
                 setData(response.data)
+                console.log(response.data)
             })
             .catch((e) => {
                 toast.error(e.message, { id: toastId })
@@ -407,7 +417,7 @@ const Home: NextPageWithLayout = () => {
 
                     {
                         dataGraphic &&
-                        <div className="flex flex-col transition-transform translate-x-1 z-0 gap-4">
+                        <div className="flex flex-col transition-transform translate-x-1 z-0 gap-7">
                             <div className="flex flex-col md:flex-row md:items-center">
                                 <h3 className="mr-4 min-w-40 md:text-end">Duración:</h3>
                                 <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
@@ -437,7 +447,7 @@ const Home: NextPageWithLayout = () => {
                                         weeklyLimit !== "0" && weeklyLimit !== "" &&
                                         <Alert
                                             type="warning"
-                                            message="Por favor, establecer todos los limites semanales correspondiente, de lo contrario por defecto seran 0 Kg"
+                                            message="Todas las entradas son obligatorias."
                                         />
                                     }
                                 </div>

@@ -28,7 +28,6 @@ export default function Modal({ open, onClose, action, type, message, children, 
         e.preventDefault()
         onClose()
     }
-
     useEffect(() => {
         const handleScroll = (e: Event) => {
             if (open) {
@@ -143,7 +142,11 @@ export default function Modal({ open, onClose, action, type, message, children, 
                                     <XAxis dataKey="Semana" orientation="bottom" label={{ value: "Semana", position: "bottom" }} tick={{ fontSize: tickFontSize }}>
                                     </XAxis>
                                     <YAxis tickFormatter={formatNumber} label={{ value: 'Kilos', angle: -90, position: 'left' }} tick={{ fontSize: tickFontSize }} />
-                                    <Tooltip formatter={formatTooltipValue} labelFormatter={formatTooltipLabel} />
+                                    <Tooltip
+                                        formatter={formatTooltipValue}
+                                        labelFormatter={formatTooltipLabel}
+                                        contentStyle={{ "borderRadius": "15px", borderColor: "black", backgroundColor: 'rgba(45, 42, 38, 0.85)', color: '#fff', padding: '8px', fontSize: '14px' }}
+                                    />
                                     <Legend verticalAlign="top" height={36} />
                                     <Bar dataKey="Kilos" fill="#ff5b35" isAnimationActive={true} animationBegin={1} animationDuration={1000} animationEasing="linear" activeBar={<Rectangle fill="#2d2a26" />} />
                                 </BarChart>
@@ -155,6 +158,15 @@ export default function Modal({ open, onClose, action, type, message, children, 
                         <footer className="flex flex-row gap-8 p-4">
                         </footer>
                     </div>
+                )
+            case "information":
+                return (
+                    <>
+                        <h1 className={`text-xl ${interTitle.className}`}>{title}</h1>
+                        {
+                            children
+                        }
+                    </>
                 )
             default:
                 return (
