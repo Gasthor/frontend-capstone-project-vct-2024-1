@@ -84,7 +84,7 @@ export const ItemFile: FC<Props> = ({
             </div>
             <Modal open={openModalDelete} onClose={() => setOpenModalDelete(false)} type={"Delete"} title={"Eliminar archivo"} message={`¿Estás seguro que quieres eliminar ${name} ${year}?`} action={() => deleteFile()} />
             <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} data={data} action={() => { }} type={"Graphic"} title={`Gráfico vendimia ${year}`} message={`Gráfico representativo a la cantidad de kilos procesados en la bodega en las distintas semanas de vendimia del año ${year}.`}>
-                <p>La vendimia contó con un total de {kilosTotal(data)} kilos entregados a la bodega en {data.length} semanas.</p>
+                <p>La vendimia contó con un total de {kilosTotal(data)} kg entregados a la bodega en {data.length} semanas.</p>
             </Modal>
         </div>
     )

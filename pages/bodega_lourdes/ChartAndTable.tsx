@@ -120,7 +120,7 @@ const ChartAndTable: FC<Props> = ({
                                     selectedWeek &&
                                     <div className="flex flex-col md:flex-row md:justify-between mt-4">
                                         <p className="font-medium text-center w-fit">Semana seleccionada: <span className="font-normal">{selectedWeek}</span></p>
-                                        <p className="font-medium text-center w-fit">Kilos a cosechar: <span className="font-normal">{new Intl.NumberFormat("es-CL").format(kilosWeek)} kg</span></p>
+                                        <p className="font-medium text-center w-fit">Kilos a cosechar: <span className="font-normal">{new Intl.NumberFormat("es-CL").format(Math.round(kilosWeek))} kg</span></p>
                                     </div>
                                 }
                             </div>
@@ -133,8 +133,8 @@ const ChartAndTable: FC<Props> = ({
                                             <thead className="text-sm sticky top-0 overflow-x-scroll">
                                                 <tr className="border-b bg-gray-100 leading-none">
                                                     <th className="p-4 font-semibold">Variedad</th>
-                                                    <th className="p-4 font-semibold">Area</th>
-                                                    <th className="p-4 font-semibold">Kilos historicos</th>
+                                                    <th className="p-4 font-semibold">Área</th>
+                                                    <th className="p-4 font-semibold">Kilos históricos</th>
                                                     <th className="p-4 font-semibold">Participación</th>
                                                     <th className="p-4 "></th>
                                                 </tr>
@@ -167,7 +167,7 @@ const ChartAndTable: FC<Props> = ({
                                 <div className="flex flex-col w-fit gap-6">
                                     <div className="flex flex-row justify-between px-4">
                                         <div className="flex flex-row items-center gap-2">
-                                            <p className=" font-medium text-lg">Area:</p>
+                                            <p className=" font-medium text-lg">Área:</p>
                                             <p>{dataDetails?.AREA}</p>
                                         </div>
                                         <div className="flex flex-row items-center gap-2">

@@ -18,7 +18,7 @@ export const Alert: FC<Props> = ({
     switch (type) {
         case "warning":
             return (
-                <div className={`flex-row items-center m-1 my-2 order-first md:order-last bg-amber-50 w-fit p-2 rounded-2xl border border-amber-400 shadow-md transition-all ${open ? " flex scale-100 " : " hidden scale-0 h-0 p-0 m-0 w-0 "}`}>
+                <div className={`flex-row items-center m-1 my-2 bg-amber-50 w-fit p-2 rounded-2xl border border-amber-400 shadow-md transition-all ${open ? " flex scale-100 " : " hidden scale-0 h-0 p-0 m-0 w-0 "}`}>
                     <PiWarning className=" text-3xl md:text-xl text-amber-700 mx-2" />
                     <p className=" font-extralight text-xs text-amber-600 text-justify">
                         {message}
@@ -29,7 +29,7 @@ export const Alert: FC<Props> = ({
 
         case "information":
             return (
-                <div className={` inset-0 flex-row items-center m-1 my-2 order-first md:order-last bg-slate-100 w-fit p-2 rounded-2xl border border-slate-300 shadow-md transition-all ${open ? "flex scale-200" : " hidden scale-0 h-0 p-0 m-0"}`}>
+                <div className={` inset-0 flex-row items-center m-1 my-2 bg-slate-100 w-fit p-2 rounded-2xl border border-slate-300 shadow-md transition-all ${open ? "flex scale-200" : " hidden scale-0 h-0 p-0 m-0"}`}>
                     <IoIosInformationCircleOutline className=" text-3xl md:text-xl mx-2" />
                     <p className=" font-extralight text-xs text-slate-700 text-justify">
                         {message}

@@ -271,7 +271,7 @@ const Home: NextPageWithLayout = () => {
             }
         })
         if (hasEmptyInputs) {
-            toast.error("Por favor complete todos los campos obligatorios.")
+            toast.error("Complete todos los campos en la sección Limites semanales.")
             return
         }
 
@@ -463,7 +463,7 @@ const Home: NextPageWithLayout = () => {
                                         weeklyLimit !== "0" && weeklyLimit !== "" &&
                                         <Alert
                                             type="information"
-                                            message="El ingreso de factores semanales es OPCIONAL, por defecto se establecera un 100%"
+                                            message="El ingreso de factores semanales es OPCIONAL."
                                         />
 
                                     }

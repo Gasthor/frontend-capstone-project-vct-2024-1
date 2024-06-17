@@ -17,7 +17,8 @@ export const BarRechart: FC<Props> = ({
 
 
     const formatNumberTooltip = (number: number): string => {
-        return number.toLocaleString('es-ES') + " kg";
+        const numberRounded = Math.round(number)
+        return numberRounded.toLocaleString('es-ES') + " kg";
     }
     const formatNumber = (number: number): string => {
         if (number >= 1000000) {
