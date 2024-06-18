@@ -5,9 +5,23 @@ interface Props {
     data: {
         Semana: string;
         Kilos: number;
+        Years?: [number, number, string, string][]
+
+
     }[] | undefined
     setSelectedWeek?: React.Dispatch<React.SetStateAction<number | undefined>>
-    minHeight : number
+    minHeight: number
+}
+
+interface CustomTooltip {
+    data?: {
+        Semana: string;
+        Kilos: number;
+        Years?: [number, number, string, string][]
+    }[] | undefined
+    label?: number
+    active?: boolean;
+    payload?: { value: number }[];
 }
 
 export const BarRechart: FC<Props> = ({
@@ -29,7 +43,6 @@ export const BarRechart: FC<Props> = ({
             return number.toString()
         }
     }
-
     const formatTooltipValue = (value: string | number | (string | number)[]): string => {
         if (Array.isArray(value)) {
             return value.map(v => (typeof v === 'number' ? formatNumber(v) : v)).join(', ')
@@ -40,7 +53,6 @@ export const BarRechart: FC<Props> = ({
         return `Semana ${label}`
     }
     const [tickFontSize, setTickFontSize] = useState(12);
-
     const handleResize = () => {
         if (window.innerWidth < 768) { // Ancho típico para considerar dispositivo móvil
             setTickFontSize(10);
@@ -48,10 +60,37 @@ export const BarRechart: FC<Props> = ({
             setTickFontSize(14);
         }
     };
-
     const handleBarClick = (week: number) => {
-        if(setSelectedWeek) setSelectedWeek(week + 1);
+        if (setSelectedWeek) setSelectedWeek(week + 1);
     };
+
+    const CustomTooltip: React.FC<CustomTooltip> = ({ label, payload, active, data }) => {
+        if (payload && active && label && data) {
+            const years = data[label - 1]?.Years
+            return (
+                <div className="custom-tooltip bg-black-vct/85 p-4 text-sm text-white rounded-xl border border-black">
+                    <p className="label text-base mb-1">{`Semana ${label}`}</p>
+                    <p className="mb-1">{`Kilogramos: ${formatTooltipValue(payload[0].value)}`}</p>
+
+                    {
+                        years && (
+                            <div>
+                                <p>Fecha de inicio</p>
+                                {
+                                    years?.map((x) => (
+                                        <p>{x[0]} : {x[2]} {x[1]} de {x[3]}</p>
+                                    ))
+                                }
+                            </div>
+                        )
+                    }
+
+                </div>
+            )
+        }
+
+    }
+
     return (
         <ResponsiveContainer width="100%" height="100%" minHeight={minHeight}>
             <BarChart
@@ -72,7 +111,8 @@ export const BarRechart: FC<Props> = ({
                 <Tooltip
                     formatter={formatTooltipValue}
                     labelFormatter={formatTooltipLabel}
-                    contentStyle={{"borderRadius":"15px",borderColor : "black", backgroundColor: 'rgba(45, 42, 38, 0.85)', color: '#fff', padding: '8px', fontSize: '14px' }}
+                    content={<CustomTooltip data={data} />}
+                    contentStyle={{ "borderRadius": "15px", borderColor: "black", backgroundColor: 'rgba(45, 42, 38, 0.85)', color: '#fff', padding: '8px', fontSize: '14px' }}
                 />
                 <Legend verticalAlign="top" height={36} />
                 <Bar

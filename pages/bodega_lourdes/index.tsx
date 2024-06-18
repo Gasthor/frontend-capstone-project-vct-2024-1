@@ -27,6 +27,7 @@ type GraphicData = {
     data: {
         Semana: string;
         Kilos: number;
+        Years: [number, number, string, string][]
     }[];
     weeks: [number, string][]
 };
@@ -426,11 +427,12 @@ const Home: NextPageWithLayout = () => {
                         dataGraphic &&
                         <div className="flex flex-col transition-transform translate-x-1 z-0 gap-7">
                             <div className="flex flex-col md:flex-row justify-center items-start min-h-80 bg-gray-100 border p-6 rounded-2xl shadow">
-                                <BarRechart data={dataGraphic && dataGraphic.data} minHeight={300} />
-                                <div className="order-first md:order-last flex flex-col gap-5 md:mt-4">
-                                    <p className="text-center font-semibold text-xl">Distribucion de kilogramos históricos</p>
+                               
+                                <div className="order-first  md:order-last flex flex-col gap-2 md:mt-4">
+                                    <p className="text-center font-semibold text-xl">Distribución de kilogramos históricos</p>
                                     <p>Gráfico representativo a las vendimias <span className=" font-medium">{dataGraphic?.years} </span>con un total de kilos procesados promedio de <span className=" font-medium">{dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</span></p>
                                 </div>
+                                <BarRechart data={dataGraphic && dataGraphic.data} minHeight={300} />
                             </div>
                             <div className="flex flex-col md:flex-row md:items-center">
                                 <h3 className="mr-4 min-w-40 md:text-end">Duración:</h3>

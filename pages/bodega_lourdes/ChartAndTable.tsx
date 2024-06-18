@@ -5,7 +5,7 @@ import { Container } from "@/components/UI/Container/Container";
 import { TitleContainer } from "@/components/UI/Container/TitleContainer";
 import { Select } from "@/components/UI/Input/Select";
 import Modal from "@/components/UI/Modals/Modal";
-import { FC, SetStateAction, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { toast } from "sonner";
 
 interface Props {
