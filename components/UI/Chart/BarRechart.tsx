@@ -1,20 +1,20 @@
-import { FC, SetStateAction, useState } from "react";
+import { FC, useState } from "react";
 import { ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, Rectangle, BarChart } from "recharts";
 
 interface Props {
     data: {
         Semana: string;
         Kilos: number;
-    }[]
-    setSelectedWeek: React.Dispatch<React.SetStateAction<number | undefined>>
+    }[] | undefined
+    setSelectedWeek?: React.Dispatch<React.SetStateAction<number | undefined>>
+    minHeight : number
 }
 
 export const BarRechart: FC<Props> = ({
     data,
-    setSelectedWeek
+    setSelectedWeek,
+    minHeight
 }) => {
-
-
 
     const formatNumberTooltip = (number: number): string => {
         const numberRounded = Math.round(number)
@@ -50,10 +50,10 @@ export const BarRechart: FC<Props> = ({
     };
 
     const handleBarClick = (week: number) => {
-        setSelectedWeek(week + 1);
+        if(setSelectedWeek) setSelectedWeek(week + 1);
     };
     return (
-        <ResponsiveContainer width="100%" height="100%" minHeight={"450px"}>
+        <ResponsiveContainer width="100%" height="100%" minHeight={minHeight}>
             <BarChart
                 width={300}
                 height={45}

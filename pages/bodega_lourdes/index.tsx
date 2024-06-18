@@ -18,6 +18,7 @@ import { ButtonSecundary } from "@/components/UI/Buttons/ButtonSecundary";
 import { Alert } from "@/components/UI/Alert/Alert";
 import { SkeletonSelectVendimia } from "@/components/UI/Skeleton/SkeletonSelectVendimia";
 import ChartAndTable from "./ChartAndTable";
+import { BarRechart } from "@/components/UI/Chart/BarRechart";
 
 type GraphicData = {
     duration: number;
@@ -72,9 +73,9 @@ const Home: NextPageWithLayout = () => {
             AREA: string
             FAMILIA: string
             CONTRATO: number
-            PRODUCTOR : string
+            PRODUCTOR: string
             NUM_SEMANA: number
-            KILOS_ENTREGADOS : number
+            KILOS_ENTREGADOS: number
         }[]
         data: {
             Semana: string;
@@ -92,7 +93,7 @@ const Home: NextPageWithLayout = () => {
         years: [number]
     } | undefined>(undefined)
 
-    
+
 
     const getFileVendimia = () => {
         setLoadingFile(true)
@@ -289,6 +290,11 @@ const Home: NextPageWithLayout = () => {
             .then((response: any | JSON) => {
                 toast.success(response.data.message, { id: toastId })
                 setData(response.data)
+                const result = document.getElementById("result")
+                result?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                })
                 console.log(response.data)
             })
             .catch((e) => {
@@ -315,7 +321,13 @@ const Home: NextPageWithLayout = () => {
 
     return (
         <>
-            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación Táctica Bodega Lourdes</h1>
+            <div className="relative w-11/12 sm:max-w-5xl h-fit">
+                <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación Táctica Bodega Lourdes</h1>
+                <div className=" absolute top-1/2 left-5 transform -translate-y-1/2">
+                    <ButtonPrincipal goTo="/" />
+                </div>
+            </div>
+
             <Container>
                 <TitleContainer number={1} title="Datos históricos" />
                 <div className="flex flex-row overflow-x-auto mt-3 min-h-48 ">
@@ -402,22 +414,24 @@ const Home: NextPageWithLayout = () => {
                                                 <p>No hay vendimias cargadas.</p>
                                         }
                                     </div>
-                                    <Modal open={openModalGraphic} onClose={() => setOpenModalGraphic(false)} action={() => { }} type={"Graphic"} title={"Distribución de kilogramos por semana"} data={dataGraphic && dataGraphic.data}>
-                                        <p>Gráfico representativo a las vendimias <span className=" font-medium">{dataGraphic?.years} </span>con un total de kilos procesados promedio de <span className=" font-medium">{dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</span></p>
-                                    </Modal>
                                 </div>
                                 <div className="flex flex-col md:flex-row w-full gap-4 justify-center">
                                     <ButtonSecundary title={dataGraphic ? "Actualizar información" : "Obtener información"} action={() => getVendimia()} isDisable={yearsSelected === undefined} messageDisable={dataGraphic ? "Actualizar información" : "Obtener información"} />
-                                    <ButtonSecundary title={"Ver gráfico"} action={() => setOpenModalGraphic(true)} isDisable={dataGraphic ? false : true} messageDisable="Ver gráfico" />
                                 </div>
                             </>
-
                         )
                     }
 
                     {
                         dataGraphic &&
                         <div className="flex flex-col transition-transform translate-x-1 z-0 gap-7">
+                            <div className="flex flex-col md:flex-row justify-center items-start min-h-80 bg-gray-100 border p-6 rounded-2xl shadow">
+                                <BarRechart data={dataGraphic && dataGraphic.data} minHeight={300} />
+                                <div className="order-first md:order-last flex flex-col gap-5 md:mt-4">
+                                    <p className="text-center font-semibold text-xl">Distribucion de kilogramos históricos</p>
+                                    <p>Gráfico representativo a las vendimias <span className=" font-medium">{dataGraphic?.years} </span>con un total de kilos procesados promedio de <span className=" font-medium">{dataGraphic && new Intl.NumberFormat("es-CL").format(dataGraphic.total)} kg.</span></p>
+                                </div>
+                            </div>
                             <div className="flex flex-col md:flex-row md:items-center">
                                 <h3 className="mr-4 min-w-40 md:text-end">Duración:</h3>
                                 <div className="flex  flex-col md:flex-row gap-3 flex-wrap my-2">
@@ -425,7 +439,6 @@ const Home: NextPageWithLayout = () => {
                                 </div>
 
                             </div>
-
                             <div className="flex flex-col md:flex-row md:items-center ">
                                 <h3 className="mr-4 min-w-40 md:text-end">Kilogramos objetivos:</h3>
                                 <Input
@@ -482,8 +495,6 @@ const Home: NextPageWithLayout = () => {
             {
                 data && <ChartAndTable data={data} />
             }
-
-            <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>
     )
 }
