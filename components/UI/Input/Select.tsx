@@ -25,7 +25,6 @@ export const Select: FC<Props> = ({
 }) => {
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(record)
         setValue(e.target.value)
     }
 

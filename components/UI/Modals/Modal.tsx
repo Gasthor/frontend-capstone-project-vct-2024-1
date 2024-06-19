@@ -126,10 +126,8 @@ export default function Modal({ open, onClose, action, type, message, children, 
                         <h1 className={`text-xl ${interTitle.className}`}>{title}</h1>
                         <h2 className={`text-sm md:text-base text-center ${interSecondary.className}`}>{message}</h2>
                         {data && (
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minHeight={50} minWidth={250}>
                                 <BarChart
-                                    width={300}
-                                    height={45}
                                     data={data}
                                     margin={{
                                         top: 5,

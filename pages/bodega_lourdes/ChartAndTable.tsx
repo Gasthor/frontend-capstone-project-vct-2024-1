@@ -45,7 +45,7 @@ const ChartAndTable: FC<Props> = ({
     const [selectedWeek, setSelectedWeek] = useState<number | undefined>(undefined);
     const [kilosWeek, setKilosWeek] = useState(0)
     const [selectFamily, setSelectFamily] = useState("")
-    const [filter, setFilter] = useState<string[]>()
+    const [filter, setFilter] = useState<string[]>([])
 
     const [openModalDetails, setOpenModalDetails] = useState(false)
     const [dataDetails, setDataDetails] = useState<{
@@ -78,10 +78,8 @@ const ChartAndTable: FC<Props> = ({
         TOTAL_KILOS: number;
         PORCENTAJE_PARTICIPACION: number;
     }[] | undefined>(undefined)
-
-
+    //Permite obtener y desplegar informacion referente a los contratos y productores por area y variedad
     const detailsModal = (numWeek: number, area: string, family: string) => {
-        console.log(data)
         if (data !== undefined && data.contract_producer) {
             const contractProducer = data.contract_producer;
 
@@ -103,6 +101,7 @@ const ChartAndTable: FC<Props> = ({
             toast.error("No se pudo recuperar la información");
         }
     }
+    //Permite descargar un archivo
     const downloadFile = () => {
         const toastId = toast.loading("Iniciando descarga")
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia/download/`, { responseType: 'blob' })
@@ -119,7 +118,7 @@ const ChartAndTable: FC<Props> = ({
                 toast.error(`Error al desacargar la planificación, reintente mas tarde`, { id: toastId })
             })
     }
-
+    //Permite realizar obtener informacion sobre la semana seleccionada
     useEffect(() => {
         if (selectedWeek && data) {
             const ranking = data.ranking
@@ -139,16 +138,15 @@ const ChartAndTable: FC<Props> = ({
 
         }
     }, [selectedWeek])
+    //Permite realizar el filtro en la tabla de participacion
     useEffect(() => {
         if (dataweek) {
             if (selectFamily === "") {
-                console.log(dataweek)
                 setFilterDataWeek(dataweek)
             }
             else {
                 const newFilterDataWeek = dataweek.filter((x) => x.FAMILIA === selectFamily)
                 setFilterDataWeek(newFilterDataWeek)
-                console.log(filterDataWeek)
             }
         }
     }, [selectFamily, dataweek])
@@ -205,7 +203,7 @@ const ChartAndTable: FC<Props> = ({
                                                         filterDataWeek?.map(({ AREA, FAMILIA, KILOS_ENTREGADOS, PORCENTAJE_PARTICIPACION }, index) => {
                                                             const classes = "p-4 border-b border-gray-1000 text-sm"
                                                             return (
-                                                                <tr>
+                                                                <tr key={index}>
                                                                     <td className={classes}>{FAMILIA}</td>
                                                                     <td className={classes}>{AREA}</td>
                                                                     <td className={classes}>{KILOS_ENTREGADOS}</td>
@@ -258,7 +256,7 @@ const ChartAndTable: FC<Props> = ({
                                                     dataDetails?.list.map(({ CONTRATO, PRODUCTOR, KILOS_ENTREGADOS }, index) => {
                                                         const classes = "p-4 border-b border-gray-1000 text-sm"
                                                         return (
-                                                            <tr>
+                                                            <tr key={index}>
                                                                 <td className={classes}>{CONTRATO}</td>
                                                                 <td className={classes}>{PRODUCTOR}</td>
                                                                 <td className={classes}>{KILOS_ENTREGADOS}</td>

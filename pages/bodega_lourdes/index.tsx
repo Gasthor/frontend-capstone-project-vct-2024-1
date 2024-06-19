@@ -92,9 +92,7 @@ const Home: NextPageWithLayout = () => {
         }[]
         years: [number]
     } | undefined>(undefined)
-
-
-
+    //Permite obtener los archivos cargados en el sistema
     const getFileVendimia = () => {
         setLoadingFile(true)
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/files/`)
@@ -106,12 +104,11 @@ const Home: NextPageWithLayout = () => {
             })
             .finally(() => setLoadingFile(false))
     }
+    //Permite cargar un archivo al sistema
     const uploadFile = () => {
         if (file) {
             const formData = new FormData()
-
             const data = { "FECHA": date, "CONTRATO": contract, "PRODUCTOR": producer, "KILOS ENTREGADOS": kilosDelivered, "FAMILIA": family, "AREA": area, "CALIDAD": quality, "RUT": rut, "TEMPERATURA": temperature, "GRADO BRIX": brix }
-
             formData.append("file", file)
             formData.append("data", JSON.stringify(data))
             if (color !== "") {
@@ -123,14 +120,13 @@ const Home: NextPageWithLayout = () => {
                     toast.success(response.data.message, { id: toastId })
                     getFileVendimia()
                     setFile(null)
-                    console.log(response.data.message)
                 })
                 .catch((e) => {
-                    console.log(e)
                     toast.error(e.response.data.error, { id: toastId })
                 })
         }
     }
+    //Permite descargar un archivo del sistema
     const downloadFile = (path: string, fileName: string) => {
         const toastId = toast.loading("Iniciando descarga")
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/${path}`, { responseType: 'blob' })
@@ -147,6 +143,7 @@ const Home: NextPageWithLayout = () => {
                 toast.error(`Error al desacargar ${fileName}, reintente mas tarde`, { id: toastId })
             })
     }
+    //Permite obtener informacion de las vendimias seleccionadas en la seccion de Configuracion vendimia
     const getVendimia = () => {
         setDataGraphic(undefined)
         const formData = new FormData();
@@ -161,6 +158,7 @@ const Home: NextPageWithLayout = () => {
                 toast.error("Error al obtener datos de las vendimias, reintente más tarde", { id: toastId });
             });
     }
+    //Genera las entradas de los limites semanales de la bodega segun la duracion de semanas seleccionada
     const weeksLimit = () => {
         const weeksElements = []
         const quantityWeeks = parseInt(weeklyLimit)
@@ -168,8 +166,9 @@ const Home: NextPageWithLayout = () => {
         for (let i = 0; i < quantityWeeks; i++) {
             weeksElements.push(
                 <Input
+                    key={i}
                     title={"Semana " + (i + 1)}
-                    value={limitWeek[i]}
+                    value={limitWeek[i] ?? ""}
                     onChange={(e) => handleInputChangeLimit(i, e)}
                     id={`limit-${i.toString()}`}
                     type="out-label"
@@ -182,8 +181,8 @@ const Home: NextPageWithLayout = () => {
         } else {
             return weeksElements
         }
-
     }
+    //Genera las entradas de los factores semanales de la bodega segun la duracion de semanas seleccionada
     const weeksFactor = () => {
 
         const weeksElements = []
@@ -192,8 +191,9 @@ const Home: NextPageWithLayout = () => {
         for (let i = 0; i < quantityWeeks; i++) {
             weeksElements.push(
                 <Input
+                    key={i}
                     title={"Semana " + (i + 1)}
-                    value={factorWeek[i]}
+                    value={factorWeek[i] ?? ""}
                     onChange={(e) => handleInputChangeFactor(i, e)}
                     id={`factor-${i.toString()}`}
                     type="out-label"
@@ -207,6 +207,7 @@ const Home: NextPageWithLayout = () => {
             return weeksElements
         }
     }
+    //Formatea los valores ingresados en las entradas de limites semanales a formato miles
     const handleInputChangeLimit = (id: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const unformattedValue = event.target.value.replace(/\D/g, '');
         event.target.classList.remove("border-red-500")
@@ -218,6 +219,7 @@ const Home: NextPageWithLayout = () => {
             setLimitWeek({ ...limitWeek, [id]: "0" });
         }
     }
+    //Formatea los valores ingresados en las entradas de factores semanales a formato miles
     const handleInputChangeFactor = (id: number, event: React.ChangeEvent<HTMLInputElement>) => {
         const unformattedValue = event.target.value.replace(/\D/g, '');
         if (unformattedValue !== "") {
@@ -237,8 +239,8 @@ const Home: NextPageWithLayout = () => {
         }
 
     }
+    //Formatea los valores ingresados en la entrada de kilogramos objetivos a formato miles
     const handleInputChangeObjKg = (value: string) => {
-        console.log("hola")
         if (value !== "") {
             const unformattedValue = value.replace(/\./g, '');
             const formattedValue = new Intl.NumberFormat("es-CL").format(parseInt(unformattedValue));
@@ -247,9 +249,9 @@ const Home: NextPageWithLayout = () => {
             setObjKg("0")
         }
     }
+    //Funcion para dar funcionalidad al input tipo checkbox
     const isYearInList = (year: number) => {
         let newYearsSelected = [...(yearsSelected || [])];
-
         if (newYearsSelected.length === 0 || !newYearsSelected.includes(year)) {
             newYearsSelected.push(year);
         } else {
@@ -260,6 +262,7 @@ const Home: NextPageWithLayout = () => {
         }
         setYearsSelected(newYearsSelected.length > 0 ? newYearsSelected : undefined);
     }
+    //Funcion permite iniciar planificacion
     const startPlanning = () => {
         const inputs = Array.from(document.querySelectorAll('#weeksLimit input[type="text"]')) as HTMLInputElement[];
         let hasEmptyInputs = false
@@ -295,17 +298,16 @@ const Home: NextPageWithLayout = () => {
                     behavior: "smooth",
                     block: "start"
                 })
-                console.log(response.data)
             })
             .catch((e) => {
                 toast.error(e.message, { id: toastId })
             })
     }
-
+    //Obtener los archivos cargados en el sistema
     useEffect(() => {
         getFileVendimia()
     }, [])
-
+    //Permite limpiar los datos guardados en los limites y factores semanales al disminuir la duracion de la vendimia 
     useEffect(() => {
         Object.keys(limitWeek).forEach(key => {
             if (parseInt(key) > parseInt(weeklyLimit) - 1) {
@@ -322,8 +324,8 @@ const Home: NextPageWithLayout = () => {
     return (
         <>
             <div className="relative w-11/12 sm:max-w-5xl h-fit">
-                <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Planificación Táctica Bodega Lourdes</h1>
-                <div className=" absolute top-1/2 left-5 transform -translate-y-1/2">
+                <h1 className={`m-4 text-xl sm:text-4xl text-center w-3/4 lg:w-full mx-auto ${interTitle.className}`}>Planificación Táctica Bodega Lourdes</h1>
+                <div className=" absolute top-1/2 left-0 md:left-5 transform -translate-y-1/2">
                     <ButtonPrincipal goTo="/" />
                 </div>
             </div>
@@ -337,7 +339,7 @@ const Home: NextPageWithLayout = () => {
                         ) : (
                             listFileVendimia &&
                                 listFileVendimia.length > 0 ? (
-                                listFileVendimia.map((x) => (<ItemFile name={x.name} year={x.year} listFile={listFileVendimia} setListFile={setListFileVendimia} data={x.data} />))
+                                listFileVendimia.map((x) => (<ItemFile key={x.year} name={x.name} year={x.year} listFile={listFileVendimia} setListFile={setListFileVendimia} data={x.data} />))
                             ) :
                                 (
                                     <div className="m-auto flex flex-col justify-center items-center">
@@ -401,7 +403,7 @@ const Home: NextPageWithLayout = () => {
                                         {
                                             listFileVendimia && listFileVendimia.length > 0 ?
                                                 listFileVendimia.map((x) => (
-                                                    <div className="flex items-center me-4">
+                                                    <div key={x.year} className="flex items-center me-4">
                                                         <input
                                                             className="w-5 h-5 appearance-none border-2 cursor-pointer border-orange-vct/80  rounded-md mr-2 hover:border-orange-vct checked:bg-no-repeat checked:bg-center checked:border-orange-vct checked:bg-orange-vct/60 transition-colors duration-500"
                                                             type="checkbox"
@@ -490,6 +492,7 @@ const Home: NextPageWithLayout = () => {
                 </div>
             </Container>
             {
+                //Si se inicio una planificacion y hay datos de la misma se mostrara el componente ChartAndTable que representa a los resultados de la planificacion
                 data && <ChartAndTable data={data} />
             }
         </>

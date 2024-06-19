@@ -68,7 +68,7 @@ const Home: NextPageWithLayout = () => {
             toast.error("Se deben seleccionar los 2 archivos requeridos.")
         }
     }
-
+    //Funcion para descargar archivos
     const downloadFile = (path: string, fileName: string) => {
         const toastId = toast.loading("Iniciando descarga")
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${path}`, { responseType: 'blob' })
@@ -85,7 +85,7 @@ const Home: NextPageWithLayout = () => {
                 toast.error(`Error al desacargar ${fileName}, reintente mas tarde`, { id: toastId })
             })
     }
-
+    //Funcion para iniciar la planificacion
     const startPlanning = () => {
         setButtonStartPlanning(true)
         const toastId = toast.loading("Iniciando programación, porfavor espere un momento")
@@ -142,18 +142,18 @@ const Home: NextPageWithLayout = () => {
         axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/getListas_habilitar`)
             .then((response: any | JSON) => {
                 setListMachine(response.data)
-                console.log(response.data)
             })
             .catch(() => {
                 toast.error("Error al obtener datos de las maquinarias, reintente más tarde")
             })
     }
-    //*** Funcion para generar dialogo de confirmacion al eliminar maquina EVALUAR EXPORTAR O CAMBIAR POR SWAL
+    //Funcion para generar dialogo de confirmacion al eliminar maquina
     const modalDelete = (idMachine: string) => {
         setIdMachineDelete(idMachine)
         setOpenModalDelete(true)
 
     }
+    //Funcion para generar dialogo que permite editar las maquinarias presentes en el sistema
     const modalEdit = (idMachineEdit: string, task: string, maxCapacity: string, processingTime: string, status: string) => {
         setTaskEdit(task)
         setMaxCapacityEdit(maxCapacity)
@@ -185,6 +185,7 @@ const Home: NextPageWithLayout = () => {
             toast.error(`Error al eliminar la máquina ${idMachine}, intente nuevamente`, { id: toastId })
         })
     }
+    //Funcion que permite editar maquina
     const editMachine = (idMachineEdit: string) => {
         const toastId = toast.loading(`Guardando cambios de la maquina ${idMachineEdit}`)
         if (taskEdit && maxCapacityEdit && processingTimeEdit && idMachineEdit) {
@@ -208,13 +209,12 @@ const Home: NextPageWithLayout = () => {
             })
         }
     }
+    //Obtener lista de maquinas en el sistema
     useEffect(() => {
         getListMachine()
         setListMachineFilter(listMachineFilter)
-        console.log(listMachineFilter)
-
     }, [])
-
+    //Permite limpiar entradas(Select) al cambiar de tarea
     useEffect(() => {
         setMaxCapacity("")
         if (task === "Fermentación") {
@@ -223,17 +223,14 @@ const Home: NextPageWithLayout = () => {
             setProcessingTime("")
         }
     }, [task])
-
+    //Desbloquea el boton de subir archivo 
     useEffect(() => {
         setButtonUpload(false)
     }, [filePDF, fileXlsx])
-
+    //Permite almacenar datos en listMachineFilter al seleccionar un filtro
     useEffect(() => {
         if (listMachine) {
-            console.log(filter)
-
             if (filter === "") {
-                console.log()
                 setListMachineFilter(listMachine)
             } else {
                 const updatedList = {
@@ -253,7 +250,12 @@ const Home: NextPageWithLayout = () => {
 
     return (
         <>
-            <h1 className={`m-4 text-3xl sm:text-4xl text-center ${interTitle.className}`}>Programación Bodega Lontué</h1>
+            <div className="relative w-11/12 sm:max-w-5xl h-fit">
+                <h1 className={`m-4 text-xl sm:text-4xl text-center w-3/4 lg:w-full mx-auto ${interTitle.className}`}>Programación Bodega Lontué</h1>
+                <div className=" absolute top-1/2 left-0 md:left-5 transform -translate-y-1/2">
+                    <ButtonPrincipal goTo="/" />
+                </div>
+            </div>
             <Container>
                 <TitleContainer number={1} title="Carga de archivos" />
                 <div className="flex flex-col sm:flex-row w-full justify-center mt-2 sm:gap-16">
@@ -336,8 +338,8 @@ const Home: NextPageWithLayout = () => {
                                             <tbody className="max-h-96 text-xs sm:text-sm">
                                                 {
                                                     listMachineFilter && Array.isArray(listMachineFilter["deshabilitado"]) &&
-                                                    listMachineFilter["deshabilitado"].map((row) => (
-                                                        <tr className="border-b-2 bg-slate-100">
+                                                    listMachineFilter["deshabilitado"].map((row,index) => (
+                                                        <tr key={index} className="border-b-2 bg-slate-100">
                                                             <th className="px-3 py-3">{row[0]}</th>
                                                             <th className="px-3 py-3">{row[5]}</th>
                                                             <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : ".000 Litros"}</th>
@@ -352,8 +354,8 @@ const Home: NextPageWithLayout = () => {
                                                 }
                                                 {
                                                     listMachineFilter && Array.isArray(listMachineFilter["habilitado"]) &&
-                                                    listMachineFilter["habilitado"].map((row) => (
-                                                        <tr className="border-b-2 bg-slate-100">
+                                                    listMachineFilter["habilitado"].map((row,index) => (
+                                                        <tr key={index} className="border-b-2 bg-slate-100">
                                                             <th className="px-3 py-3">{row[0]}</th>
                                                             <th className="px-3 py-3">{row[5]}</th>
                                                             <th className="px-3 py-3">{row[1]}{row[5] === "Despalillado" || row[5] === "Prensado" ? ".000 Kilos" : " Litros"}</th>
@@ -390,7 +392,6 @@ const Home: NextPageWithLayout = () => {
                 </div>
 
             </Container >
-            <ButtonPrincipal title={"Regresar al inicio"} goTo="/" />
         </>
     )
 }

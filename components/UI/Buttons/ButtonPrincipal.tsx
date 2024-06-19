@@ -2,7 +2,6 @@ import { interSecondary } from "@/styles/fonts"
 import Link from "next/link"
 import { FC } from "react"
 import { FaHouse } from "react-icons/fa6"
-import { IoMdArrowRoundBack } from "react-icons/io"
 
 type functionButton = () => void
 
@@ -14,7 +13,6 @@ interface Props {
     messageDisable?: string
     children?: React.ReactNode
     bgColor?: string
-
 }
 
 export const ButtonPrincipal: FC<Props> = ({
@@ -32,13 +30,13 @@ export const ButtonPrincipal: FC<Props> = ({
             {
                 goTo ? (
                     <div className="flex">
-                        <Link href={goTo} className={`bg-orange-vct rounded-2xl py-2 px-4 text-white text-center sm:rounded-xl cursor-pointer hover:bg-orange-700 mx-auto ${interSecondary} ${!title && "text-3xl bg-transparent hover:bg-transparent"}`}>
+                        <Link href={goTo} className={`bg-orange-vct rounded-2xl py-2 px-4 text-white text-center sm:rounded-xl cursor-pointer hover:bg-orange-700 mx-auto ${interSecondary} ${!title && "text-xl md:text-3xl bg-transparent hover:bg-transparent"}`}>
                             {title ? title : <FaHouse className="text-black" />}
                         </Link>
                     </div>
 
                 ) : (
-                    <button className={`flex flex-row justify-center py-2 px-4 shadow-md rounded-2xl sm:rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-full sm:w-fit disabled:pointer-events-none transition-all duration-1000 ${!isDisable ? "bg-orange-vct" : " bg-orange-vct/80"} ${bgColor}`} onClick={() => action && action()} disabled={isDisable} type="button" >
+                    <button className={`flex flex-row justify-center py-2 px-4 shadow-md rounded-2xl sm:rounded-xl cursor-pointer  h-fit w-full sm:w-fit disabled:pointer-events-none transition-all duration-1000 ${isDisable && " bg-orange-vct/80"} ${bgColor ? bgColor :"hover:bg-orange-700 bg-orange-vct"}`} onClick={() => action && action()} disabled={isDisable} type="button" >
 
                         <p className={`text-white ${interSecondary}`}>{!isDisable ? title : messageDisable}</p>
                         {children}

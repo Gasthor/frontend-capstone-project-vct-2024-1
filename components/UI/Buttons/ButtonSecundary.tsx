@@ -10,8 +10,6 @@ interface Props {
     action?: functionButton
     isDisable?: boolean
     messageDisable?: string
-    type?: string
-
 }
 
 export const ButtonSecundary: FC<Props> = ({
@@ -19,8 +17,7 @@ export const ButtonSecundary: FC<Props> = ({
     goTo,
     action,
     isDisable,
-    messageDisable,
-    type
+    messageDisable
 
 }) => {
 

@@ -78,7 +78,7 @@ export const BarRechart: FC<Props> = ({
                                 <p>Fecha de inicio</p>
                                 {
                                     years?.map((x) => (
-                                        <p>{x[0]} : {x[2]} {x[1]} de {x[3]}</p>
+                                        <p key={x[0]}>{x[0]} : {x[2]} {x[1]} de {x[3]}</p>
                                     ))
                                 }
                             </div>
