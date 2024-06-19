@@ -105,7 +105,7 @@ const ChartAndTable: FC<Props> = ({
     }
     const downloadFile = () => {
         const toastId = toast.loading("Iniciando descarga")
-        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendimia/download/`, { responseType: 'blob' })
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_LOURDES_URL}/api/vendimia/download/`, { responseType: 'blob' })
             .then((response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
