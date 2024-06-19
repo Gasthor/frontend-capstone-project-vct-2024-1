@@ -1,11 +1,14 @@
 import { Alert } from "@/components/UI/Alert/Alert";
+import { ButtonPrincipal } from "@/components/UI/Buttons/ButtonPrincipal";
 import { ButtonSecundary } from "@/components/UI/Buttons/ButtonSecundary";
 import { BarRechart } from "@/components/UI/Chart/BarRechart";
 import { Container } from "@/components/UI/Container/Container";
 import { TitleContainer } from "@/components/UI/Container/TitleContainer";
 import { Select } from "@/components/UI/Input/Select";
 import Modal from "@/components/UI/Modals/Modal";
+import axios from "axios";
 import { FC, useEffect, useState } from "react"
+import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 import { toast } from "sonner";
 
 interface Props {
@@ -100,6 +103,22 @@ const ChartAndTable: FC<Props> = ({
             toast.error("No se pudo recuperar la información");
         }
     }
+    const downloadFile = () => {
+        const toastId = toast.loading("Iniciando descarga")
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/vendimia/download/`, { responseType: 'blob' })
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', "Resumen-planificacion.xlsx")
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link)
+                toast.success(`Descargando resumen de la planificación generada`, { id: toastId })
+            }).catch(() => {
+                toast.error(`Error al desacargar la planificación, reintente mas tarde`, { id: toastId })
+            })
+    }
 
     useEffect(() => {
         if (selectedWeek && data) {
@@ -111,7 +130,7 @@ const ChartAndTable: FC<Props> = ({
 
             const family: string[] = []
 
-            for (let i = 0; i < newDataWeek.length; i ++){
+            for (let i = 0; i < newDataWeek.length; i++) {
                 if (!family.includes(newDataWeek[i].FAMILIA)) {
                     family.push(newDataWeek[i].FAMILIA);
                 }
@@ -120,19 +139,19 @@ const ChartAndTable: FC<Props> = ({
 
         }
     }, [selectedWeek])
-    useEffect(()=>{
-        if(dataweek){
-            if(selectFamily === ""){
+    useEffect(() => {
+        if (dataweek) {
+            if (selectFamily === "") {
                 console.log(dataweek)
                 setFilterDataWeek(dataweek)
             }
-            else{
-                const newFilterDataWeek = dataweek.filter((x)=>x.FAMILIA === selectFamily)
+            else {
+                const newFilterDataWeek = dataweek.filter((x) => x.FAMILIA === selectFamily)
                 setFilterDataWeek(newFilterDataWeek)
                 console.log(filterDataWeek)
             }
-        }   
-    },[selectFamily, dataweek])
+        }
+    }, [selectFamily, dataweek])
 
 
     return (
@@ -144,7 +163,7 @@ const ChartAndTable: FC<Props> = ({
                         <div className="flex flex-col gap-8 items-center lg:w-[800px] mx-auto">
                             <h2 className="text-center text-xl font-semibold mt-4">Gráfico de distribución de kilos</h2>
 
-                            <BarRechart data={data.data} setSelectedWeek={setSelectedWeek} minHeight={450}/>
+                            <BarRechart data={data.data} setSelectedWeek={setSelectedWeek} minHeight={450} />
                             <div className="w-full md:px-4 bg-gray-100 border p-6 rounded-2xl shadow mt-4">
                                 <h2 className="text-center text-xl font-semibold mb-7">Resumen planificación</h2>
                                 <div className="flex flex-col md:flex-row md:justify-between">
@@ -166,8 +185,8 @@ const ChartAndTable: FC<Props> = ({
                                     <div className="w-full">
 
                                         <div className="flex md:flex-row items-center gap-2 p-2 text-xs justify-end">
-                                           <p>Flitro por variedad</p>
-                                           <Select name={""} value={selectFamily} setValue={setSelectFamily} list={filter} defaultValue="TODOS" />
+                                            <p>Flitro por variedad</p>
+                                            <Select name={""} value={selectFamily} setValue={setSelectFamily} list={filter} defaultValue="TODOS" />
                                         </div>
 
                                         <div className="flex justify-center my-2 rounded-2xl overflow-auto w-full md:w-fit max-h-[480px] border shadow-sm">
@@ -201,12 +220,18 @@ const ChartAndTable: FC<Props> = ({
                                                 </tbody>
                                             </table>
                                         </div>
+
                                     </div>
 
                                 ) : (
                                     <Alert message="Seleccione una semana para visualizar la tabla" type="information" />
                                 )
                             }
+                            <div className="w-full flex flex-row justify-end mt-4">
+                                <ButtonPrincipal title="Exportar" bgColor="bg-green-600 hover:bg-green-700" action={()=>downloadFile()}>
+                                    <PiMicrosoftExcelLogoFill className="text-white ml-2 text-2xl" />
+                                </ButtonPrincipal>
+                            </div>
                             <Modal open={openModalDetails} onClose={() => setOpenModalDetails(false)} title="Información" action={() => { }} type="information">
                                 <div className="flex flex-col w-fit gap-6">
                                     <div className="flex flex-row justify-between px-4">

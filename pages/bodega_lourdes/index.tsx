@@ -59,7 +59,6 @@ const Home: NextPageWithLayout = () => {
     const [brix, setBrix] = useState("GRADO BRIX")
     const [temperature, setTemperature] = useState("TEMPERATURA")
 
-    const [openModalGraphic, setOpenModalGraphic] = useState(false)
     const [dataGraphic, setDataGraphic] = useState<GraphicData | undefined>(undefined);
 
     const [weeklyLimit, setWeeklyLimit] = useState("0")
@@ -480,18 +479,14 @@ const Home: NextPageWithLayout = () => {
                                             type="information"
                                             message="El ingreso de factores semanales es OPCIONAL."
                                         />
-
                                     }
                                 </div>
                             </div>
-
                             <div className="mx-auto">
                                 <ButtonPrincipal title={"Iniciar planificación"} action={() => startPlanning()} isDisable={weeklyLimit !== "0" && objKg > "0" ? false : true} messageDisable="Iniciar planificación" />
                             </div>
                         </div>
-
                     }
-
                 </div>
             </Container>
             {

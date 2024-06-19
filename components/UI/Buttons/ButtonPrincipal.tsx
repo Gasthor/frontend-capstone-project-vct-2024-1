@@ -13,6 +13,7 @@ interface Props {
     isDisable?: boolean
     messageDisable?: string
     children?: React.ReactNode
+    bgColor?: string
 
 }
 
@@ -22,7 +23,8 @@ export const ButtonPrincipal: FC<Props> = ({
     action,
     isDisable,
     messageDisable,
-    children
+    children,
+    bgColor
 
 }) => {
     return (
@@ -36,7 +38,7 @@ export const ButtonPrincipal: FC<Props> = ({
                     </div>
 
                 ) : (
-                    <button className={`flex flex-row justify-center py-2 px-4 shadow-md rounded-2xl sm:rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-full sm:w-fit disabled:pointer-events-none transition-all duration-1000 ${!isDisable ? "bg-orange-vct" : " bg-orange-vct/80"}`} onClick={() => action && action()} disabled={isDisable} type="button" >
+                    <button className={`flex flex-row justify-center py-2 px-4 shadow-md rounded-2xl sm:rounded-xl cursor-pointer hover:bg-orange-700 h-fit w-full sm:w-fit disabled:pointer-events-none transition-all duration-1000 ${!isDisable ? "bg-orange-vct" : " bg-orange-vct/80"} ${bgColor}`} onClick={() => action && action()} disabled={isDisable} type="button" >
 
                         <p className={`text-white ${interSecondary}`}>{!isDisable ? title : messageDisable}</p>
                         {children}
