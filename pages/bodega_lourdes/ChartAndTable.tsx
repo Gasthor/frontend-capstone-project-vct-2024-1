@@ -154,12 +154,12 @@ const ChartAndTable: FC<Props> = ({
 
     return (
         <Container>
-            <TitleContainer number={3} title={"Resultados de planificación"} />
+            <TitleContainer number={3} title={"Planificación vendimia"} />
             <div className="min-h-[400px] w-full" id="result">
                 {
                     data && (
                         <div className="flex flex-col gap-8 items-center lg:w-[800px] mx-auto">
-                            <h2 className="text-center text-xl font-semibold mt-4">Gráfico de distribución de kilos</h2>
+                            <h2 className="text-center text-xl font-semibold mt-4">Gráfico de distribución de kilogramos</h2>
 
                             <BarRechart data={data.data} setSelectedWeek={setSelectedWeek} minHeight={450} />
                             <div className="w-full md:px-4 bg-gray-100 border p-6 rounded-2xl shadow mt-4">
@@ -193,7 +193,7 @@ const ChartAndTable: FC<Props> = ({
                                                     <tr className="border-b bg-gray-100 leading-none">
                                                         <th className="p-4 font-semibold">Variedad</th>
                                                         <th className="p-4 font-semibold">Área</th>
-                                                        <th className="p-4 font-semibold">Kilos históricos</th>
+                                                        <th className="p-4 font-semibold">Kilogramos históricos</th>
                                                         <th className="p-4 font-semibold">Participación</th>
                                                         <th className="p-4 "></th>
                                                     </tr>
@@ -248,7 +248,7 @@ const ChartAndTable: FC<Props> = ({
                                                 <tr className="border-b bg-gray-100 leading-none">
                                                     <th className="p-4 font-semibold">Contrato</th>
                                                     <th className="p-4 font-semibold">Productor</th>
-                                                    <th className="p-4 font-semibold">Kilos cosechados</th>
+                                                    <th className="p-4 font-semibold">Kilogramos cosechados</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
