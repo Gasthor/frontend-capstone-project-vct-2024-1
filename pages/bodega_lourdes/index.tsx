@@ -67,6 +67,7 @@ const Home: NextPageWithLayout = () => {
     const [limitWeek, setLimitWeek] = useState<{ [key: number]: string }>({})
     const [factorWeek, setFactorWeek] = useState<{ [key: number]: string | undefined }>({})
     const [objKg, setObjKg] = useState("0")
+    const [weekStart, setWeekStart] = useState("")
 
     const [data, setData] = useState<{
         contract_producer: {
@@ -284,6 +285,7 @@ const Home: NextPageWithLayout = () => {
         formData.append("obj_kilos", objKg)
         formData.append("limit_week", JSON.stringify(limitWeek))
         formData.append("factor_week", JSON.stringify(factorWeek))
+        formData.append("week_start", weekStart)
 
         formData.append("duration", weeklyLimit)
 
@@ -443,6 +445,11 @@ const Home: NextPageWithLayout = () => {
 
                             </div>
                             <div className="flex flex-col md:flex-row md:items-center ">
+                                <h3 className="mr-4 min-w-40 md:text-end">Semana de inicio:</h3>
+                                <input type="week" className="p-2 border rounded-lg" value={weekStart} onChange={(e)=> setWeekStart(e.target.value)}/>
+
+                            </div>
+                            <div className="flex flex-col md:flex-row md:items-center ">
                                 <h3 className="mr-4 min-w-40 md:text-end">Kilogramos objetivos:</h3>
                                 <Input
                                     title=""
@@ -485,7 +492,7 @@ const Home: NextPageWithLayout = () => {
                                 </div>
                             </div>
                             <div className="mx-auto">
-                                <ButtonPrincipal title={"Iniciar planificación"} action={() => startPlanning()} isDisable={weeklyLimit !== "0" && objKg > "0" ? false : true} messageDisable="Iniciar planificación" />
+                                <ButtonPrincipal title={"Iniciar planificación"} action={() => startPlanning()} isDisable={weeklyLimit !== "0" && objKg > "0" && weekStart !== "" ? false : true} messageDisable="Iniciar planificación" />
                             </div>
                         </div>
                     }

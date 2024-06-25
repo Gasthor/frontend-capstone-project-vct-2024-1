@@ -21,7 +21,7 @@ interface CustomTooltip {
     }[] | undefined
     label?: number
     active?: boolean;
-    payload?: { value: number }[];
+    payload?: { value: number, payload: { Fecha: string } }[];
 }
 
 export const BarRechart: FC<Props> = ({
@@ -67,11 +67,21 @@ export const BarRechart: FC<Props> = ({
     const CustomTooltip: React.FC<CustomTooltip> = ({ label, payload, active, data }) => {
         if (payload && active && label && data) {
             const years = data[label - 1]?.Years
+
+            const date = new Date(payload[0].payload.Fecha)
+
+            const day = date.getUTCDate()
+            const month = date.toLocaleString('default', { month: 'long' })
+            const year = date.getUTCFullYear()
+
             return (
                 <div className="custom-tooltip bg-black-vct/85 p-4 text-sm text-white rounded-xl border border-black">
                     <p className="label text-base mb-1">{`Semana ${label}`}</p>
                     <p className="mb-1">{`Kilogramos: ${formatTooltipValue(payload[0].value)}`}</p>
+                    {
+                       payload[0].payload.Fecha && <p className="mb-1">{`Fecha semana: ${day} ${month} ${year}`}</p>
 
+                    }
                     {
                         years && (
                             <div>
