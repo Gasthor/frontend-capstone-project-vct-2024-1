@@ -1,0 +1,16 @@
+#................
+#  SCP SPACE QA
+#................
+applications:
+- name: capstonefront2024-1
+  memory: 2GB
+  disk_quota: 2GB
+
+  random-route: false
+  ignore:
+      - node_modules
+      - .env.local
+
+env: 
+  NEXT_PUBLIC_BACKEND_URL: https://capstonebackend.cfapps.br10.hana.ondemand.com
+  NEXT_PUBLIC_BACKEND_LOURDES_URL: https://capstonebackendlourdes.cfapps.br10.hana.ondemand.com

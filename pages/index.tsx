@@ -29,7 +29,7 @@ export const Home: NextPageWithLayout = () => {
             <p className={`text-center ${interSecondary.className}`}>Planificación táctica de vendimia</p>
             <p className={`text-center ${interSecondary.className}`}>Proceso de vino tinto</p>
           </div>
-          <Image height={48} width={350} src="/img-temp-bodegas.jpeg" alt="imagen bodega 1" className="rounded-xl object-cover h-56" priority quality={60}/>
+          <Image height={48} width={350} src="/IMG_4607.PNG" alt="imagen bodega 1" className="rounded-xl object-none h-56" priority quality={60}/>
           <ButtonPrincipal title="Ingresar" goTo="/bodega_lourdes" />
         </Container>
 
